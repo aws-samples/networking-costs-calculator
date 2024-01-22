@@ -1,0 +1,18 @@
+type PoP {
+	pop: String!
+	region: String!
+}
+
+type Price {
+	pricing_id: ID!
+	pricePerUnit: Float!
+}
+
+type Query {
+	bulkPrices(ids: [ID]): [Price]
+	distinctPops: [PoP]
+}
+
+schema {
+	query: Query
+}

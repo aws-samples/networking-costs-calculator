@@ -1,0 +1,263 @@
+.MainArea {
+    border: 1px solid #999999;
+    padding: 10px;
+    display: flex;
+    height: 650px; /* 640 before*/
+    position: relative;
+}
+input{
+    max-width: 70%;
+}
+h1 {
+    font-size: 20px;
+    margin-top: 0px;
+    margin-bottom: 3px;
+}
+h2 {
+    font-size: 17px;
+    margin-top: 0px;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+h4, h5 {
+    margin-top: 1px;
+    margin-bottom: 5px;
+}
+
+.centered {
+    margin-left: auto !important;
+    margin-right: auto !important;  
+}
+
+.baseElement {
+    z-index: -1;
+    border: 1px solid rgba(30, 44, 54, 0.6);
+    vertical-align: middle;
+    position: relative;
+    background-color: #f7f7f7;
+    color: #111111;
+}
+
+.diagramRow {
+    text-align: center;
+    /*display: flex;
+    margin: 0 auto;*/    
+}
+.diagramRow .account:nth-of-type(2) {
+    margin-left: 20px;    
+}
+.diagramRow .account:nth-of-type(3) {
+    margin-left: 90px;    
+}
+
+.mt60 {
+    margin-top:60px;
+}
+
+.account {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+.icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+
+.vpcTitle {
+    font-size: smaller;
+}
+
+.title {
+    padding-left: 20px;  /* width of the image plus a little extra padding */
+    height: 36px;
+    line-height: 36px;
+    margin-bottom: 10px;
+}
+.title span{
+    display: block;
+}
+.vpc {
+    min-width: 120px;
+    border: 1px solid rgb(68,132,44);
+    margin: 6px;   
+}
+
+.arrowLabel {
+    color: #714ab0;
+    font-size: 10px;
+    text-align: center;
+    margin: 1px;
+}
+
+.peeringArrow {
+    color: #5787d0;
+}
+
+.whitebg {
+    background-color: white;
+}
+.graybg {
+    background-color: #f7f7f7;
+}
+
+.nopos{
+    position: unset !important;
+}
+
+.tableContainer {
+    max-height: 206px;
+    table-layout:fixed;
+
+}
+
+table.minimalistBlack {
+    border: 0px solid #000000;
+    text-align: left;
+    background-color: #fefefe;
+    font-size: 10px;
+    width: 100%;
+}
+table.minimalistBlack td, table.minimalistBlack th {
+    border: 0px solid #E2E2E2;
+    padding: 2px 4px;
+}
+table.minimalistBlack tbody td {
+    font-size: 13px;
+}
+table.minimalistBlack tr:nth-child(even) {
+    background: rgb(247, 239, 255);
+}
+table.minimalistBlack thead {
+    border-bottom: 1px solid #000000;
+}
+table.minimalistBlack thead th {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+}
+table.minimalistBlack tfoot td {
+    font-size: 13px;
+}
+table.minimalistBlack thead tr{
+    display:block;
+}
+table.minimalistBlack tfoot tr{
+    display:block;
+}
+table.minimalistBlack tbody{
+    display:block;
+    overflow:auto;
+}
+table.minimalistBlack tbody td:first-child{
+    width: 10px;
+}
+table.minimalistBlack tbody td:nth-child(2){
+    width: 50px;
+}
+table.minimalistBlack tbody td:nth-child(3){
+    width: 232px;
+}
+table.minimalistBlack tbody td:nth-child(4){
+    width: 50px;
+}
+table.minimalistBlack tbody td:last-child{
+    width: 50px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #999999;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    padding: 12px;
+}
+.card:nth-of-type(n+2) {
+    margin-top: 12px;
+}
+.card-title{
+    font-size: 15px;
+    font-weight: 600;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.footer {
+    position: relative;
+    bottom: 0;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    width: 95%;
+    padding-bottom: 5px;
+}
+
+.inline{
+    display: inline-block;
+    display: -moz-inline-stack;
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+svg {
+    z-index: 10;
+}
+
+.Modal {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    right: 30%;
+    bottom: 40%;
+    background-color: #fff;
+    z-index: 20;
+    padding: 30px;
+}
+
+.Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    background-color:#5787d06e;
+}
+.vpcBlock{
+    position: relative;
+    border: 1px dashed #1e8901;
+    padding-top: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.azBlock{
+    border: 1px dashed #387EB5;
+    display: flex;
+    position: relative;
+    flex-wrap: wrap; 
+    justify-content: space-around; 
+    padding-top: 32px;
+    padding-bottom: 20px; 
+}
+
+.small-icon{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}

@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'AmazonEmber';
+  src: url('css/amazonember_rg.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+   url('css/amazonember_rg.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+} 
+
+body {
+  /*background-color: #282c34;
+  color: #f7f7f7;*/
+  font-family: 'AmazonEmber', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
