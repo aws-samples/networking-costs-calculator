@@ -1,6 +1,14 @@
-# Welcome to the AWS Networking Costs Calculator Project
+# Welcome to the Networking Costs Calculator Project
 
 This project is a self-hosted calculator to help you estimate AWS networking costs.
+
+## How to use
+![Screenshot](frontend/public/img/calc-screenshot.jpg?raw=true "Screenshot")
+
+* Deploy the application using the deployment script (see [How to deploy](#how-to-deploy)). If already deployed, start the web application (`npm start` from the frontend directory)
+* Select the AWS Region of interest from the top right dropdown list
+* Select the services of interest and see their recurring monthly costs estimation
+* Add inputs about data transfer, and see their cost estimation
 
 ## Architecture
 The calculator has two main components:
