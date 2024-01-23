@@ -36,7 +36,7 @@ export default class Block extends React.Component<BlockProps, {}> {
 
         var img_style = {height: this.props.height + 'px'};
 
-        if(this.props.icon === 'small'){
+        if (this.props.icon === 'small'){
             img_style = {height:'45px'}
         }
 
@@ -47,23 +47,23 @@ export default class Block extends React.Component<BlockProps, {}> {
             this.props.src==='CGW' ? <img src={'img/cgw.svg'} style={img_style} alt="cgw" /> :
             this.props.src==='DC' ? <img src={'img/dc.svg'} style={img_style} alt="dc" /> :
             this.props.src==='DX' ? <img src={'img/dx.svg'} style={img_style} alt="DX" /> :
-            this.props.src==='NATG' ? <img src={'img/nat-gateway.svg'} style={img_style} class="small-icon" alt="NATG" /> :
+            this.props.src==='NATG' ? <img src={'img/nat-gateway.svg'} style={img_style} className="small-icon" alt="NATG" /> :
             this.props.src==='CVPN' ? <img src={'img/cvpn.svg'} style={img_style} alt="CVPN" /> :
-            this.props.src==='client' ? <img src={'img/client.svg'} style={img_style} class="small-icon" alt="client" /> :
-            this.props.src==='internet' ? <img src={'img/internet.svg'} style={img_style} class="small-icon" alt="internet" /> :
-            this.props.src==='NLB' ? <img src={'img/nlb.svg'} style={img_style} class="small-icon" alt="nlb" /> :
-            this.props.src==='ALB' ? <img src={'img/alb.svg'} style={img_style} class="small-icon" alt="alb" /> :
-            this.props.src==='R53RES' ? <img src={'img/r53res.svg'} style={img_style} class="small-icon" alt="r53" /> :
-            this.props.src==='DNSFW' ? <img src={'img/res-dns-fw.svg'} style={img_style} class="small-icon" alt="resdnsfw" /> :
-            this.props.src==='EC2' ? <img src={'img/ec2.svg'} style={img_style} class="small-icon" alt="ec2" /> :
-            this.props.src==='ENI' ? <img src={'img/eni.svg'} style={img_style} class="small-icon" alt="eni" /> :
-            this.props.src==='ENDP' ? <img src={'img/endpoint.svg'} style={img_style} class="small-icon" alt="ednp" /> :
-            this.props.src==='PHZ' ? <img src={'img/phz.svg'} style={img_style} class="small-icon" alt="phz" /> :
-            this.props.src==='NFWE' ? <img src={'img/nfw-endp.svg'} style={img_style} class="small-icon" alt="nfw-endp" /> :
-            this.props.src==='SERVER' ? <img src={'img/server.svg'} style={img_style} class="small-icon" alt="server" /> :
-            this.props.src==='IGW' ? <img src={'img/igw.svg'} style={img_style} class="small-icon" alt="igw" /> :
-            this.props.src==='GLB' ? <img src={'img/glb.svg'} style={img_style} class="small-icon" alt="glb" /> :
-            this.props.src==='APPL' ? <img src={'img/appliance.svg'} style={img_style} class="small-icon" alt="appl" /> :
+            this.props.src==='client' ? <img src={'img/client.svg'} style={img_style} className="small-icon" alt="client" /> :
+            this.props.src==='internet' ? <img src={'img/internet.svg'} style={img_style} className="small-icon" alt="internet" /> :
+            this.props.src==='NLB' ? <img src={'img/nlb.svg'} style={img_style} className="small-icon" alt="nlb" /> :
+            this.props.src==='ALB' ? <img src={'img/alb.svg'} style={img_style} className="small-icon" alt="alb" /> :
+            this.props.src==='R53RES' ? <img src={'img/r53res.svg'} style={img_style} className="small-icon" alt="r53" /> :
+            this.props.src==='DNSFW' ? <img src={'img/res-dns-fw.svg'} style={img_style} className="small-icon" alt="resdnsfw" /> :
+            this.props.src==='EC2' ? <img src={'img/ec2.svg'} style={img_style} className="small-icon" alt="ec2" /> :
+            this.props.src==='ENI' ? <img src={'img/eni.svg'} style={img_style} className="small-icon" alt="eni" /> :
+            this.props.src==='ENDP' ? <img src={'img/endpoint.svg'} style={img_style} className="small-icon" alt="ednp" /> :
+            this.props.src==='PHZ' ? <img src={'img/phz.svg'} style={img_style} className="small-icon" alt="phz" /> :
+            this.props.src==='NFWE' ? <img src={'img/nfw-endp.svg'} style={img_style} className="small-icon" alt="nfw-endp" /> :
+            this.props.src==='SERVER' ? <img src={'img/server.svg'} style={img_style} className="small-icon" alt="server" /> :
+            this.props.src==='IGW' ? <img src={'img/igw.svg'} style={img_style} className="small-icon" alt="igw" /> :
+            this.props.src==='GLB' ? <img src={'img/glb.svg'} style={img_style} className="small-icon" alt="glb" /> :
+            this.props.src==='APPL' ? <img src={'img/appliance.svg'} style={img_style} className="small-icon" alt="appl" /> :
             this.props.src==='NONE'?  '' :
 
             
