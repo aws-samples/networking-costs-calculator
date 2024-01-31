@@ -2,7 +2,8 @@
 
 #deploy backend with cdk
 cd backend
-cdk deploy
+npm install
+cdk deploy --require-approval never
 
 #get the outputs from the stack
 export NETCALC_API_URL=`aws cloudformation describe-stacks --stack-name NetCalcBackendStack --query "Stacks[0].Outputs[?OutputKey=='apiUrl'].OutputValue" --output text`
@@ -42,6 +43,6 @@ EOF
 
 #install the frontend dependencies and start the app
 cd ../frontend
-npm i
+npm install
 export NODE_OPTIONS=--openssl-legacy-provider
 npm start

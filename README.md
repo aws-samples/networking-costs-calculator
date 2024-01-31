@@ -28,6 +28,15 @@ $ npm -v && node -v
 7.24.2
 v18.16.1
 ```
+* The AWS CDK installed (you can install with `npm install -g aws-cdk`).
+```sh
+$ cdk --version
+2.124.0 (build 4b6724c)
+```
+* If you have never used the AWS CDK in the current account and Region, run bootstrapping with npx cdk bootstrap.
+```sh
+npx cdk bootstrap aws://123456789012/us-east-1
+```
 * An AWS Account to run the backend resources, and the AWS CLI (v2) installed and configured.
 To make sure the AWS CLI is installed and configured on your machine,
 try running the following command. You should get the default user - make sure it has permissions to deploy the backend reosurces.

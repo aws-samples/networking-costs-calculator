@@ -261,3 +261,8 @@ svg {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
 }
+
+input[type="checkbox"], input[type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+}

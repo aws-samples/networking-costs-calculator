@@ -7,6 +7,7 @@ interface AnchorProps {
     location: string,
     relation_id: String,
     relations: Array<Relation>,
+    extraStyle?: any,
 }
 
 export default class Anchor extends React.Component<AnchorProps, {}> {
@@ -34,18 +35,19 @@ export default class Anchor extends React.Component<AnchorProps, {}> {
             default:
                 break;
         }
+        inlnstyle.position = 'absolute';
 
         return (
-            <div>
-                <ArcherElement
-                    style={inlnstyle}
-                    className={classname}
-                    id={this.props.relation_id}
-                    relations={this.props.relations}>
+            <div style={{position: 'relative'}}>
+                <div style={{...inlnstyle,  ...this.props.extraStyle}} className={classname}>
+                    <ArcherElement
+                        id={this.props.relation_id}
+                        relations={this.props.relations}>
 
-                        <div>&nbsp;</div>
+                            <div>&nbsp;</div>
 
-                </ArcherElement>
+                    </ArcherElement>
+                </div>
             </div>
         )
     }

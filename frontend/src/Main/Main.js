@@ -1,12 +1,11 @@
 import * as React from 'react';
 import './main.css';
+import 'react-widgets/styles.css';
 
 import { ArcherContainer, ArcherElement } from 'react-archer';
 import Block from './Block.js'
 import Calc from '../Calc/Calc.js'
-import 'react-widgets/dist/css/react-widgets.css';
-import DropdownList from 'react-widgets/lib/DropdownList';
-import LoadingOverlay from 'react-loading-overlay';
+import DropdownList from 'react-widgets/DropdownList';
 import { generateClient } from 'aws-amplify/api';
 import * as queries from '../graphql/queries';
 import Modal from 'react-modal';
@@ -16,7 +15,6 @@ import { Alert } from 'reactstrap';
 /* eslint no-dupe-keys: 0 */  // --> OFF
 
 const graphqlClient = generateClient();
-LoadingOverlay.propTypes = undefined;
 
 export default class Main extends React.Component {
 
@@ -55,6 +53,12 @@ export default class Main extends React.Component {
 
     constructor(props) {
         super(props);
+        
+        //refs
+        this.secondRegionNetworkingAccount = React.createRef();
+        this.calculatorRef = React.createRef();
+        this.diagram = React.createRef();
+
         this.state = {
           region: "US East (N. Virginia)",
           currency:'$',
@@ -128,9 +132,6 @@ export default class Main extends React.Component {
           not_supported : [], // tracks services that will be disabled, add to this list when one or more pricing details for a service are not avaiable from the API
           using_default_pricng : false
         };
-        this.secondRegionNetworkingAccount = React.createRef();
-        this.calculatorRef = React.createRef();
-        this.diagram = React.createRef();
     }
 
     componentDidMount() {
@@ -306,7 +307,7 @@ export default class Main extends React.Component {
         }
         this.setState()
     }
-
+    
     toggleServices = (checked, service, e ) => { // controls which service should be turned on on off, add extra logic to disabled/enable other services
 
         let should_tgw =  true //&& //&& this.state.tgw) || checked  //&& (checked && this.state[service]);
@@ -616,12 +617,13 @@ export default class Main extends React.Component {
 
     render() {
         
+        
         return (
             <LoadingOverlay active={this.state.preloader_active} text='Retrieving updated prices...' spinner >
 
-                <div>
+                <div style={{position: 'relative'}}>
                     {/* Region Selection Area */}
-                    <div style={{position: "absolute", top: -36, right: 0}}>
+                    <div style={{position: "absolute", top: -40, right: 0}}>
                         
                         <div style={{display: 'inline-block', color: '#555', fontSize: '14px'}}>
                             Region:
@@ -633,7 +635,8 @@ export default class Main extends React.Component {
                                 data={this.regions}
                                 defaultValue={"US East (N. Virginia)"}
                                 style={{fontSize: '12px', display: 'inline-block', display: '-moz-inline-stack'}}
-                                valueField="code"
+                                //valueField="code"
+                                dataKey="code"
                                 textField="region"
                                 groupBy="continent"
                                 onChange={ (value,metadata) => {
@@ -660,7 +663,7 @@ export default class Main extends React.Component {
                                  {/* Main Diagram */}
                                 <div id="diagram" style={{display:"flex"}}>
 
-                                    <ArcherContainer ref={this.diagram} strokeColor='#714ab0' noCurves={false} strokeWidth='2' arrowLength='5' >
+                                    <ArcherContainer ref={this.diagram} strokeColor='#714ab0' noCurves={false} strokeWidth='2' endShape={ {arrow: { arrowLength: 5}}}  >
 
                                          {/* Main Gird */}
                                         <div style={{display:'grid', gridTemplateColumns:'auto auto auto', gap:'20px', alignItems:'center',padding:'20px'}}>
@@ -989,7 +992,7 @@ export default class Main extends React.Component {
                                                                                             archer_id="glb-endp-a"
                                                                                             relations={{
                                                                                                 b2: [ {
-                                                                                                    targetId: 'l8-glb',
+                                                                                                    targetId: 'l6-glb',
                                                                                                     targetAnchor: 'left',
                                                                                                     sourceAnchor: 'bottom',
                                                                                                     style: {strokeColor: '#AF2623'},
@@ -1565,8 +1568,8 @@ export default class Main extends React.Component {
                                                                                                         style: {strokeColor: '#AF2623'},
                                                                                                         label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
                                                                                                     }],
-                                                                                                    r8: [{
-                                                                                                        targetId: 'l8-tgw',
+                                                                                                    r6: [{
+                                                                                                        targetId: 'l6-tgw',
                                                                                                         targetAnchor: 'left',
                                                                                                         sourceAnchor: 'right',
                                                                                                         style: {},
@@ -1586,15 +1589,15 @@ export default class Main extends React.Component {
                                                                                             globalMarginTop="8"
                                                                                             archer_id="glb"
                                                                                             relations={{
-                                                                                                r8: (this.state.glb_d || this.state.glb_c)?[{
-                                                                                                    targetId: 'l8-appl',
+                                                                                                r6: (this.state.glb_d || this.state.glb_c)?[{
+                                                                                                    targetId: 'l6-appl',
                                                                                                     targetAnchor: 'left',
                                                                                                     sourceAnchor: 'right',
                                                                                                     style: {strokeColor: '#AF2623'},
                                                                                                     label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
                                                                                                 }] : [],
                                                                                                 t9: this.state.glb_d?[{
-                                                                                                    targetId: 'l8-glb-endp-b',
+                                                                                                    targetId: 'l7-glb-endp-b',
                                                                                                     targetAnchor: 'left',
                                                                                                     sourceAnchor: 'top',
                                                                                                     style: {strokeColor: '#5787d0'},
@@ -1702,7 +1705,7 @@ export default class Main extends React.Component {
                                                                                         label: <div className="arrowLabel peeringArrow whitebg" style={{color:'#AF2623'}}>From TGW, $0.00</div>
                                                                                     }] : [],
                                                                                     b6: this.state.vpce_c? [{
-                                                                                        targetId: 'l8-vpc-endp-c',
+                                                                                        targetId: 'l6-vpc-endp-c',
                                                                                         targetAnchor: 'left',
                                                                                         sourceAnchor: 'bottom',
                                                                                         style: {},
@@ -2019,7 +2022,6 @@ export default class Main extends React.Component {
                                                                         targetId: 'b8-endp-ie',
                                                                         targetAnchor: 'bottom',
                                                                         sourceAnchor: 'top',
-                                                                    
                                                                         label: <div className="arrowLabel peeringArrow whitebg"></div>
                                                                     }] : []
                                                                 }}
@@ -2169,7 +2171,8 @@ export default class Main extends React.Component {
                                 data={this.regions}
                                 defaultValue={"US East (N. Virginia)"}
                                 style={{fontSize: '12px', display: 'inline-block', display: '-moz-inline-stack'}}
-                                valueField="code"
+                                //valueField="code"
+                                dataKey="code"
                                 textField="region"
                                 groupBy="continent"
                                 onChange={ (value,metadata) => {
@@ -2243,4 +2246,12 @@ export default class Main extends React.Component {
         )
     }
 
+}
+
+const LoadingOverlay = ({children, active, text}) => {
+    return (
+        <div className='Humus'>
+           {children}
+        </div>
+    );
 }

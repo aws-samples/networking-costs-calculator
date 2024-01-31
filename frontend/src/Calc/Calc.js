@@ -1,7 +1,7 @@
 import React from 'react';
 import Check from './Check';
-import 'react-widgets/dist/css/react-widgets.css';
-import DropdownList from 'react-widgets/lib/DropdownList';
+import "react-widgets/styles.css";
+import DropdownList from 'react-widgets/DropdownList';
 //import Combobox from 'react-widgets/lib/Combobox';
 import { Input } from 'reactstrap';
 import TransferTableRow from './TransferTableRow'
@@ -688,7 +688,8 @@ export default class Calc extends React.Component {
                             <DropdownList
                                     data={this.state.pops}
                                     style={{fontSize: '12px', display: 'inline-block', display: '-moz-inline-stack'}}
-                                    valueField="pop"
+                                    //valueField="pop"
+                                    dataKey="pop"
                                     defaultValue={this.state.defaultPop}
                                     value={this.state.defaultPop}
                                     textField="pop"
