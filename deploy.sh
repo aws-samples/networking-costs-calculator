@@ -30,10 +30,7 @@ const awsconfig = {
     "API": {
         "NetCalcAPI": {
             "endpoint": "$NETCALC_API_URL",
-            "authMode": "iam",
-            headers: async () => ({
-                'My-Custom-Header': 'my value'
-            })
+            "authMode": "iam"
         }
     }
 };

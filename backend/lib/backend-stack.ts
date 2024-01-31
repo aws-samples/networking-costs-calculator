@@ -132,8 +132,8 @@ export class BackendStack extends cdk.Stack {
         statements: [ new cdk.aws_iam.PolicyStatement({
           effect: cdk.aws_iam.Effect.ALLOW,
           resources: [
-            api.arn + '/types/Query/bulkPrices',
-            api.arn + '/types/Query/distinctPops'
+            api.arn + '/types/Query/fields/bulkPrices',
+            api.arn + '/types/Query/fields/distinctPops'
           ],
           actions: [ 'appsync:GraphQL' ],
         }),
