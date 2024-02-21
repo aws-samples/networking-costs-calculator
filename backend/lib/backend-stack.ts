@@ -3,6 +3,9 @@ import { Construct } from 'constructs';
 import path = require('path');
 
 export class BackendStack extends cdk.Stack {
+
+  public appSyncApiUrl:string;
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -126,6 +129,8 @@ export class BackendStack extends cdk.Stack {
       value: api.graphqlUrl,
       exportName: 'NetCalcApiUrl',
     });
+    this.appSyncApiUrl = api.graphqlUrl;
+
     //policy to be assumed by the unuthenticated (and authenticated) role
     const apiPolicy = {
       AllowNetcalcAPI: new cdk.aws_iam.PolicyDocument({

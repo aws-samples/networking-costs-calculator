@@ -2,9 +2,10 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { BackendStack } from '../lib/backend-stack';
+import { FrontendStack } from '../lib/frontend-stack';
 
 const app = new cdk.App();
-new BackendStack(app, 'NetCalcBackendStack', {
+let backend = new BackendStack(app, 'NetCalcBackendStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -19,3 +20,5 @@ new BackendStack(app, 'NetCalcBackendStack', {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+
+new FrontendStack(app, 'NetCalcFrontendStack', {apiUrl: backend.appSyncApiUrl});

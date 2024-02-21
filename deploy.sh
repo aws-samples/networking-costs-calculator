@@ -1,9 +1,14 @@
 #!/bin/bash
 
-#deploy backend with cdk
-cd backend
+#install the frontend dependencies and build the react the app
+cd frontend
 npm install
-cdk deploy --require-approval never
+npm run build
+
+#deploy backend and frontend with cdk
+cd ../backend
+npm install
+cdk deploy --all --require-approval never
 
 #get the outputs from the stack
 export NETCALC_API_URL=`aws cloudformation describe-stacks --stack-name NetCalcBackendStack --query "Stacks[0].Outputs[?OutputKey=='apiUrl'].OutputValue" --output text`
@@ -11,6 +16,7 @@ export NETCALC_CIDP_ID=`aws cloudformation describe-stacks --stack-name NetCalcB
 export NETCALC_SCRAPER_LAMBDA=`aws cloudformation describe-stacks --stack-name NetCalcBackendStack --query "Stacks[0].Outputs[?OutputKey=='pricingScraperLambda'].OutputValue" --output text`
 arrIN=(${NETCALC_CIDP_ID//:/ })
 export NETCALC_REGION=${arrIN[0]}
+export NETCALC_FRONTEND_URL=`aws cloudformation describe-stacks --stack-name NetCalcFrontendStack --query "Stacks[0].Outputs[?OutputKey=='frontendUrl'].OutputValue" --output text`
 
 #run the scraper lambda function for the first time to populate the pricing data
 echo -e '\n\n****************************************************************************\nInvoking the pricing scraper Lambda function for the first time, this make take a few minutes, please wait...\n'
@@ -38,8 +44,5 @@ const awsconfig = {
 export default awsconfig;
 EOF
 
-#install the frontend dependencies and start the app
-cd ../frontend
-npm install
-export NODE_OPTIONS=--openssl-legacy-provider
-npm start
+echo "**********************************************************************************************************"
+echo The NetCalc app is deployed and the frontend URL can be accessed from $NETCALC_FRONTEND_URL
