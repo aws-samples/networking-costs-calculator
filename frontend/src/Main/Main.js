@@ -51,6 +51,8 @@ export default class Main extends React.Component {
         
     ]
 
+    noPeerRegions = ['Beijing', 'Ningxia']
+
     constructor(props) {
         super(props);
         
@@ -2168,7 +2170,7 @@ export default class Main extends React.Component {
                         
                         <div style={{width: '70%', marginLeft: 'auto', marginRight: 'auto', paddingTop: '40px'}}>
                             <DropdownList
-                                data={this.regions}
+                                data={this.regions.filter((region) => !this.noPeerRegions.includes(region.region) )} // regions can't peer with China
                                 defaultValue={"US East (N. Virginia)"}
                                 style={{fontSize: '12px', display: 'inline-block', display: '-moz-inline-stack'}}
                                 //valueField="code"
