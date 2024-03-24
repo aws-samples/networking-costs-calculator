@@ -132,6 +132,7 @@ export default class Main extends React.Component {
               alb_plcu:0.99,
               glb_plcu:0.99,
               att_vpce:0.99,
+              vpnh_vpc:0.99,
               pergb_vpce:[0.99,0.99,0.99] // data processing costs for VPC Endpoint, has 3 different limits <1 PB (first index), 1 to 4 PB(second index) and >4 PB (thrid index).
           },
           disabled_services : [], // tracks services that should be disabled, add or remove to this list when turning on a service
@@ -201,8 +202,8 @@ export default class Main extends React.Component {
         requested_ids.push("pergb_vpce_lm1--" + region_str);
         requested_ids.push("pergb_vpce_lm2--" + region_str);
         requested_ids.push("pergb_vpce_lm3--" + region_str); // pushes the IDs of the documents to be trieved from the database
+        requested_ids.push("vpnh_vpc--" + region_str);
 
-        
         const prices = await graphqlClient.graphql({query: queries.bulkPrices,
             variables:
             {
@@ -253,7 +254,9 @@ export default class Main extends React.Component {
                     prices.data.bulkPrices[29] ? prices.data.bulkPrices[29].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true),
                     prices.data.bulkPrices[30] ? prices.data.bulkPrices[30].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true),
                     prices.data.bulkPrices[31] ? prices.data.bulkPrices[31].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true)
-                ]
+                ],
+
+                vpnh_vpc: prices.data.bulkPrices[32] ? prices.data.bulkPrices[32].pricePerUnit : this.EnableOrDisableServices(['vpn'], true, true),
                 
             }
         })

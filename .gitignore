@@ -25,3 +25,4 @@ cdk.out
 .DS_Store
 work/
 aggregated_results.txt
+.vscode

@@ -33,7 +33,7 @@ def lambda_handler(event, context):
 
 def getDtoInternetPrices():
     serviceCode = 'AWSDataTransfer'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [{'Type' :'TERM_MATCH', 'Field':'transferType', 'Value': 'AWS Outbound'}]
     while nexttoken != "":
         args = {"ServiceCode": serviceCode, "Filters": filters, "MaxResults": 100}
@@ -68,7 +68,7 @@ def getHighestPriceFromDimensions(p):
     
 def getDxPrices():
     serviceCode = 'AWSDirectConnect'
-    nexttoken = "START";
+    nexttoken = "START"
     ### First step - get data transfer prices:
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'productFamily', 'Value': 'Data Transfer'}
@@ -133,7 +133,7 @@ def getOnDemandPriceDx(price_obj):
 
 def getDTPrices(filter):
     serviceCode = 'AmazonEC2'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'transferType', 'Value':filter}
                 ]
@@ -146,13 +146,13 @@ def getDTPrices(filter):
         response = pricing.get_products(**args)        
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             getOnDemandPrice(price_obj, "DT")
 
 
 def getTgwPrices():
     serviceCode = 'AmazonVPC'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'group', 'Value':'AWSTransitGateway'}
                 ]
@@ -166,13 +166,36 @@ def getTgwPrices():
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
             try:
-                price_obj = json.loads(price);
+                price_obj = json.loads(price)
                 if price_obj['product']['attributes']['groupDescription'].lower().startswith("hourly"):
                     getOnDemandPrice(price_obj, "att")
                 elif "per GB".lower() in price_obj['product']['attributes']['groupDescription'].lower():
                     getOnDemandPrice(price_obj, "pergb")    
             except Exception:
                 pass
+
+    ### Second step - get the price for Site-to-Site VPN Connection hour
+    filters = [
+                {'Type' :'TERM_MATCH', 'Field':'endpointType', 'Value':'IPsec'}
+                ]
+    pp = pprint.PrettyPrinter(indent=1, width=300)
+    
+    nexttoken = "START"
+    while nexttoken != "":
+        args = {"ServiceCode": serviceCode, "Filters": filters, "MaxResults": 100}
+        if nexttoken != "START":
+            args["NextToken"] = nexttoken
+        response = pricing.get_products(**args)        
+        nexttoken =  response.get ('NextToken',"")
+        for price in response['PriceList']:
+            try:
+                price_obj = json.loads(price)
+                if price_obj['product']['attributes']['operation'].lower().startswith("createvpnconnection"):
+                    getOnDemandPrice(price_obj, "vpnh")
+                
+            except Exception:
+                pass
+
 
 
 
@@ -191,11 +214,11 @@ def getOnDemandPrice(price_obj, code):
     if "groupDescription" in price_obj['product']['attributes']:
         groupDescription = price_obj['product']['attributes']['groupDescription'];
     
-    if not groupDescription and price_obj['product']['attributes']['transferType'].startswith("InterRegion"):
+    if not groupDescription and ("transferType" in price_obj['product']['attributes']) and price_obj['product']['attributes']['transferType'].startswith("InterRegion"):
         price_id = ("DT_InterRegion--" +
                     price_obj['product']['attributes']['fromLocation'] + "---" + 
                     price_obj['product']['attributes']['toLocation']); 
-    elif not groupDescription and price_obj['product']['attributes']['transferType'].startswith("IntraRegion"):
+    elif not groupDescription and ("transferType" in price_obj['product']['attributes']) and price_obj['product']['attributes']['transferType'].startswith("IntraRegion"):
         price_id = ("DT_IntraRegion--" +
                     price_obj['product']['attributes']['fromLocation'] + "---" + 
                     price_obj['product']['attributes']['toLocation']); 
@@ -241,7 +264,7 @@ def getOnDemandPrice(price_obj, code):
 
 def getClientVpnPrices(usageType):
     serviceCode = 'AmazonVPC'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'group', 'Value':'AWSClientVPN'},
                 {'Type' :'TERM_MATCH', 'Field':'operation', 'Value':usageType }
@@ -255,7 +278,7 @@ def getClientVpnPrices(usageType):
         response = pricing.get_products(**args)        
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             if price_obj['product']['attributes']['groupDescription'].lower().startswith("hourly"):
                 getOnDemandPrice(price_obj, "att")
             elif "per GB".lower() in price_obj['product']['attributes']['groupDescription'].lower():
@@ -263,7 +286,7 @@ def getClientVpnPrices(usageType):
                 
 def getNatGatewayPrices(usageType):
     serviceCode = 'AmazonEC2'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'productFamily', 'Value':'NAT Gateway'},
                 {'Type' :'TERM_MATCH', 'Field':'groupDescription', 'Value':usageType}
@@ -277,7 +300,7 @@ def getNatGatewayPrices(usageType):
         response = pricing.get_products(**args)        
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             if price_obj['product']['attributes']['groupDescription'].lower().startswith("hourly"):
                 getOnDemandPrice(price_obj, "att")
             elif "per GB".lower() in price_obj['product']['attributes']['groupDescription'].lower():
@@ -298,7 +321,7 @@ def getLBEndpointPrices(usageType):
         response = pricing.get_products(**args)        
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             if price_obj['product']['attributes']['groupDescription'].lower().startswith("hourly charge for"):
                 test = 1
                 #getOnDemandPrice(price_obj, "att")
@@ -323,7 +346,7 @@ def getLBPrices(usageType):
         response = pricing.get_products(**args)        
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             if price_obj['product']['attributes']['groupDescription'].lower().startswith("loadbalancer hourly"):
                 getOnDemandPrice(price_obj, "att")
             elif "Load Balancer capacity units-hr".lower() in price_obj['product']['attributes']['groupDescription'].lower():
@@ -402,7 +425,7 @@ def getOnDemandPriceR53DNSq(price_obj, code):
     
 def getR53DNSqPrices(usageType):
     serviceCode = 'AmazonRoute53'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'productFamily', 'Value':usageType},
                 ]
@@ -416,7 +439,7 @@ def getR53DNSqPrices(usageType):
         nexttoken =  response.get ('NextToken',"")
         #print(response['PriceList'])
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             #print(price_obj)
             try:
                 if "Queries".lower() in price_obj['product']['attributes']['description'].lower():
@@ -462,7 +485,7 @@ def getOnDemandPriceNF(price_obj, code):
         
 def getNFPrices(usageType):
     serviceCode = 'AWSNetworkFirewall'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'productFamily', 'Value':usageType},
                 ]
@@ -514,7 +537,7 @@ def getOnDemandPriceDX(price_obj, code):
         
 def getDXPrices(usageType): # gets prices for dedicated DX connections
     serviceCode = 'AWSDirectConnect'
-    nexttoken = "START";
+    nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'connectionType', 'Value':usageType},
                 ]
@@ -528,6 +551,10 @@ def getDXPrices(usageType): # gets prices for dedicated DX connections
         nexttoken =  response.get ('NextToken',"")
         #print(response['PriceList'])
         for price in response['PriceList']:
-            price_obj = json.loads(price);
+            price_obj = json.loads(price)
             #print(price_obj)  
             getOnDemandPriceDX(price_obj, "dx")
+
+#add a python main function as entry for python debugging
+#if __name__ == "__main__":
+#    lambda_handler(None, None)
