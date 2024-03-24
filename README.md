@@ -61,7 +61,7 @@ $ ./deploy.sh
 
 ```sh
 $ cd backend
-$ cdk destroy
+$ cdk destroy --all
 ```
 
 ## Security
