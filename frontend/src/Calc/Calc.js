@@ -52,7 +52,7 @@ export default class Calc extends React.Component {
             vpce_endp:1,
             natg_count:1,
             vpn_count: 1,
-            tgw_attachments:1,
+            tgw_attachments:3,
             dx_dedicated:{
                 '1G': 0.0,
                 '10G' :0.0,
@@ -822,6 +822,7 @@ export default class Calc extends React.Component {
                                 <input
                                     type="text"
                                     value={this.state.tgw_attachments}
+                                    disabled={true}
                                     onChange={(e) => {
                                         this.setServicePropertyValue(e, 'tgw_attachments')
                                     }}
@@ -1261,7 +1262,7 @@ export default class Calc extends React.Component {
                                     <td>TGW Attachment</td>
                                     <td>Attachment Owner</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_vpc}/h</td>
-                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_vpc, att_tot, this.state.tgw_attachments)}</td>
+                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_vpc, att_tot, 1/*this.state.tgw_attachments*/)}</td>
                                 </tr>
                                 
                                 }
