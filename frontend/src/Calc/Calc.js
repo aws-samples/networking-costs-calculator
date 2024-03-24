@@ -1360,7 +1360,7 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>GWLB</td>
                                     <td>Account A - LCUs</td>
-                                    <td>--</td>
+                                    <td>${this.props.parentState.prices.glb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('glb',att_tot)}</td>
                                 </tr>
                                 }
@@ -1396,7 +1396,7 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NLB</td>
                                     <td>Account A - LCUs</td>
-                                    <td>--</td>
+                                    <td>${this.props.parentState.prices.nlb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('nlb',att_tot)}</td>
                                 </tr>
                                 }
@@ -1415,7 +1415,7 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>ALB</td>
                                     <td>Account A - LCUs</td>
-                                    <td>--</td>
+                                    <td>${this.props.parentState.prices.alb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('alb',att_tot)}</td>
                                 </tr>
                                 }
