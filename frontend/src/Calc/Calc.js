@@ -39,8 +39,8 @@ export default class Calc extends React.Component {
             dnsfw_queries:1,
             dnsfw_dm:1,
             nwfw_endpoints:1,
-            nwfw_usage:1,
-            nwfw_usage_type:'hours',
+            nwfw_usage:30,
+            nwfw_usage_type:'days',
             alb_lcu:1,
             nlb_lcu:1,
             glb_lcu:1,
@@ -1201,7 +1201,7 @@ export default class Calc extends React.Component {
                 {(this.props.parentState.nwfw || this.props.parentState.nwfw_c) && 
                     <div className="card" style={{height: '100px'}}>
                         <div className="card-title">
-                            Network Firewall
+                            Network Firewall Usage
                         </div>
                         
                         <div style={{gridTemplateColumns:"auto auto auto", display:'grid', gap:"10px"}}>
