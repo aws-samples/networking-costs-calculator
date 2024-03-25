@@ -1251,7 +1251,7 @@ export default class Main extends React.Component {
                                                                     targetAnchor: 'left',
                                                                     sourceAnchor: 'right', 
                                                                     style: { strokeColor: '#5787d0' },
-                                                                    label: <div className="arrowLabel peeringArrow whitebg" style={{}}>${this.state.prices.dt_az}/GB DT AZ</div>
+                                                                    label: <div className="arrowLabel peeringArrow whitebg" style={{position: 'relative', top: '5px', right:'5px'}}>${this.state.prices.dt_az}/GB DT Inter-AZ</div>
                                                                     },
                                                                 ] : []
                                                             }>
@@ -1510,7 +1510,7 @@ export default class Main extends React.Component {
                                                                             targetAnchor: 'right',
                                                                             sourceAnchor: 'bottom',
                                                                             style: { strokeColor: '#5787d0' },
-                                                                            label: <div className="arrowLabel peeringArrow whitebg" style={{position: 'relative', top: '5px', left:'25px'}}>${this.state.prices.dt_az}/GB DT AZ</div>
+                                                                            label: <div className="arrowLabel peeringArrow whitebg" style={{position: 'relative', top: '5px', left:'25px'}}>${this.state.prices.dt_az}/GB DT Inter-AZ</div>
                                                                         }]
                                                                     }}
                                                                 />
