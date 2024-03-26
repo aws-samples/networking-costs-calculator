@@ -52,7 +52,7 @@ export default class Calc extends React.Component {
             vpce_endp:1,
             natg_count:1,
             vpn_count: 1,
-            tgw_attachments:1,
+            tgw_attachments:3,
             dx_dedicated:{
                 '1G': 0.0,
                 '10G' :0.0,
@@ -214,11 +214,10 @@ export default class Calc extends React.Component {
         //takes in a price p
         //total costs object tot
         // count int that multiplies the costs by, example, number of endpoints on a vpc
-
         let res = Math.round(p * 730 * 100) / 100.0; // assumes service is at 100% utilization
         if(count){res = res * count}
         tot.tot += res;
-        return res.toFixed(3);
+        return res.toFixed(2);
     }
 
     getCvpnAttMonthly = (price, tot) => {
@@ -228,7 +227,7 @@ export default class Calc extends React.Component {
     
     }
     getNWFWMonthly = (price, tot) => {
-        let res = price.toFixed(2)
+        let res = price.toFixed(3)
         tot.tot += parseFloat(res)
         return res
     
@@ -822,6 +821,7 @@ export default class Calc extends React.Component {
                                 <input
                                     type="text"
                                     value={this.state.tgw_attachments}
+                                    disabled={true}
                                     onChange={(e) => {
                                         this.setServicePropertyValue(e, 'tgw_attachments')
                                     }}
@@ -1261,7 +1261,7 @@ export default class Calc extends React.Component {
                                     <td>TGW Attachment</td>
                                     <td>Attachment Owner</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_vpc}/h</td>
-                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_vpc, att_tot, this.state.tgw_attachments)}</td>
+                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_vpc, att_tot, 1/*this.state.tgw_attachments*/)}</td>
                                 </tr>
                                 
                                 }
@@ -1279,8 +1279,8 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>VPN</td>
                                     <td>TGW Owner (Networking Account)</td>
-                                    <td>{this.props.parentState.currency}{this.props.parentState.prices.att_vpn}/h</td>
-                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_vpn , att_tot, this.state.vpn_count) }</td>
+                                    <td>{this.props.parentState.currency}{this.props.parentState.prices.vpnh_vpc}/h</td>
+                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.vpnh_vpc , att_tot, this.state.vpn_count) }</td>
                                 </tr>
                                 }
                                 {this.props.parentState.cvpn && 
@@ -1360,7 +1360,7 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>GWLB</td>
                                     <td>Account A - LCUs</td>
-                                    <td>--</td>
+                                    <td>${this.props.parentState.prices.glb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('glb',att_tot)}</td>
                                 </tr>
                                 }
@@ -1396,7 +1396,7 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NLB</td>
                                     <td>Account A - LCUs</td>
-                                    <td>--</td>
+                                    <td>${this.props.parentState.prices.nlb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('nlb',att_tot)}</td>
                                 </tr>
                                 }
@@ -1415,7 +1415,7 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>ALB</td>
                                     <td>Account A - LCUs</td>
-                                    <td>--</td>
+                                    <td>${this.props.parentState.prices.alb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('alb',att_tot)}</td>
                                 </tr>
                                 }

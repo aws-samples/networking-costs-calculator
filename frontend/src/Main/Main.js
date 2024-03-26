@@ -25,7 +25,8 @@ export default class Main extends React.Component {
         { continent: 'US West', region:'Northern California', code: 'US West (N. California)'},
         { continent: 'AWS GovCloud', region:'US-East (GovCloud)', code: 'AWS GovCloud (US-East)'},
         { continent: 'AWS GovCloud', region:'US-West (GovCloud)', code: 'AWS GovCloud (US-West)'},
-        { continent: 'Canada', region:'Central', code: 'Canada (Central)'},
+        { continent: 'Canada', region:'Canada Central', code: 'Canada (Central)'},
+        { continent: 'Canada', region:'Canada West', code: 'Canada West (Calgary)'},
         { continent: 'South America', region:'São Paulo', code: 'South America (Sao Paulo)'},
         { continent: 'EU', region:'Ireland', code: 'EU (Ireland)'},
         { continent: 'EU', region:'London', code: 'EU (London)'},
@@ -34,16 +35,19 @@ export default class Main extends React.Component {
         { continent: 'EU', region:'Stockholm', code: 'EU (Stockholm)'},
         { continent: 'EU', region:'Paris', code: 'EU (Paris)'},
         { continent: 'EU', region:'Zurich', code: 'EU (Zurich)'},
+        { continent: 'EU', region:'Spain', code: 'EU (Spain)'},
         { continent: 'Africa', region:'Cape Town', code: 'Cape Town'},
         { continent: 'Middle East', region:'Bahrain', code: 'Middle East (Bahrain)'},
         { continent: 'Middle East', region:'UAE', code: 'Middle East (UAE)'},
         { continent: 'Middle East', region:'Israel', code: 'Israel (Tel Aviv)'},
         { continent: 'Asia Pacific', region:'Hong Kong', code: 'Asia Pacific (Hong Kong)'},
+        { continent: 'Asia Pacific', region:'Hyderabad', code: 'Asia Pacific (Hyderabad)'},
         { continent: 'Asia Pacific', region:'Mumbai', code: 'Asia Pacific (Mumbai)'},
         { continent: 'Asia Pacific', region:'Tokyo', code: 'Asia Pacific (Tokyo)'},
         { continent: 'Asia Pacific', region:'Singapore', code: 'Asia Pacific (Singapore)'},
         { continent: 'Asia Pacific', region:'Seoul', code: 'Asia Pacific (Seoul)'},
         { continent: 'Asia Pacific', region:'Sydney', code: 'Asia Pacific (Sydney)'},
+        { continent: 'Asia Pacific', region:'Melbourne', code: 'Asia Pacific (Melbourne)'},
         { continent: 'Asia Pacific', region:'Osaka', code: 'Asia Pacific (Osaka-Local)'},
         { continent: 'Asia Pacific', region:'Jakarta', code: 'Asia Pacific (Jakarta)'},
         { continent: 'China', region:'Beijing', code: 'China (Beijing)'},
@@ -128,6 +132,7 @@ export default class Main extends React.Component {
               alb_plcu:0.99,
               glb_plcu:0.99,
               att_vpce:0.99,
+              vpnh_vpc:0.99,
               pergb_vpce:[0.99,0.99,0.99] // data processing costs for VPC Endpoint, has 3 different limits <1 PB (first index), 1 to 4 PB(second index) and >4 PB (thrid index).
           },
           disabled_services : [], // tracks services that should be disabled, add or remove to this list when turning on a service
@@ -197,8 +202,8 @@ export default class Main extends React.Component {
         requested_ids.push("pergb_vpce_lm1--" + region_str);
         requested_ids.push("pergb_vpce_lm2--" + region_str);
         requested_ids.push("pergb_vpce_lm3--" + region_str); // pushes the IDs of the documents to be trieved from the database
+        requested_ids.push("vpnh_vpc--" + region_str);
 
-        
         const prices = await graphqlClient.graphql({query: queries.bulkPrices,
             variables:
             {
@@ -249,7 +254,9 @@ export default class Main extends React.Component {
                     prices.data.bulkPrices[29] ? prices.data.bulkPrices[29].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true),
                     prices.data.bulkPrices[30] ? prices.data.bulkPrices[30].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true),
                     prices.data.bulkPrices[31] ? prices.data.bulkPrices[31].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true)
-                ]
+                ],
+
+                vpnh_vpc: prices.data.bulkPrices[32] ? prices.data.bulkPrices[32].pricePerUnit : this.EnableOrDisableServices(['vpn'], true, true),
                 
             }
         })
