@@ -23,8 +23,8 @@ export default class Main extends React.Component {
         { continent: 'US East', region:'Ohio', code: 'US East (Ohio)'},
         { continent: 'US West', region:'Oregon', code: 'US West (Oregon)'},
         { continent: 'US West', region:'Northern California', code: 'US West (N. California)'},
-        { continent: 'AWS GovCloud', region:'US-East', code: 'AWS GovCloud (US-East)'},
-        { continent: 'AWS GovCloud', region:'US-West', code: 'AWS GovCloud (US-West)'},
+        { continent: 'AWS GovCloud', region:'US-East (GovCloud)', code: 'AWS GovCloud (US-East)'},
+        { continent: 'AWS GovCloud', region:'US-West (GovCloud)', code: 'AWS GovCloud (US-West)'},
         { continent: 'Canada', region:'Canada Central', code: 'Canada (Central)'},
         { continent: 'Canada', region:'Canada West', code: 'Canada West (Calgary)'},
         { continent: 'South America', region:'São Paulo', code: 'South America (Sao Paulo)'},
@@ -748,7 +748,7 @@ export default class Main extends React.Component {
                                                         icon='small' 
                                                         style={{width: '260px'}}
                                                         title={<div>
-                                                                <span>Private Link Supperted Services</span>
+                                                                <span>Private Link Supported Services</span>
                                                                 <span>3rd Party VPC</span>
                                                                 <span>Service Provider VPC</span>
                                                             </div>}
@@ -803,7 +803,7 @@ export default class Main extends React.Component {
 
                                                         {/* Account A Bottom Row*/}
                                                         <ArcherElement id="vpcaa"
-                                                            relations={(this.state.dx || this.state.vpn || this.state.interRegion || this.state.r53res_inbound || this.state.r53res_outbound || this.state.tgw)? [ 
+                                                            relations={((this.state.dx || this.state.vpn || this.state.interRegion || this.state.r53res_inbound || this.state.r53res_outbound || this.state.tgw ) ^ this.state.nwfw_c)? [ 
                                                                 {
                                                                 targetId:'t4-tgw',
                                                                 targetAnchor: 'top',
@@ -1087,12 +1087,12 @@ export default class Main extends React.Component {
                                                                                                     style: {},
                                                                                                     label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
                                                                                                 }] : [],
-                                                                                                b2: (this.state.nwfw_c || this.state.glb_c || this.state.vpce_c)? [{
+                                                                                                b2: (this.state.nwfw_c || this.state.glb_c || this.state.vpce_c)? [{ // this arrow connects to the bottom of AZ1 and not the EC2 Block
                                                                                                     targetId: 't3-tgw',
                                                                                                     targetAnchor: 'top',
                                                                                                     sourceAnchor: 'bottom',
                                                                                                     style:  this.state.nwfw_c? {strokeColor:'#AF2623'} : {} ,
-                                                                                                    label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}>To TGW, ${this.state.prices.pergb_dx}</div>
+                                                                                                    label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px',  color: (this.state.nwfw_c)? "#AF2623" : ""  }}>To TGW, ${this.state.prices.pergb_dx}</div>
                                                                                                 }]:[],
                                                                                                 t2: (this.state.natg && (!this.state.cvpn && !this.state.nwfw ))? [{
                                                                                                     targetId: this.state.glb_d? 'b8-natg2': 'b8-natg',
@@ -1258,7 +1258,7 @@ export default class Main extends React.Component {
                                                                     targetAnchor: 'left',
                                                                     sourceAnchor: 'right', 
                                                                     style: { strokeColor: '#5787d0' },
-                                                                    label: <div className="arrowLabel peeringArrow whitebg" style={{}}>${this.state.prices.dt_az}/GB DT AZ</div>
+                                                                    label: <div className="arrowLabel peeringArrow whitebg" style={{position: 'relative', top: '5px', right:'5px'}}>${this.state.prices.dt_az}/GB DT Inter-AZ</div>
                                                                     },
                                                                 ] : []
                                                             }>
@@ -1517,7 +1517,7 @@ export default class Main extends React.Component {
                                                                             targetAnchor: 'right',
                                                                             sourceAnchor: 'bottom',
                                                                             style: { strokeColor: '#5787d0' },
-                                                                            label: <div className="arrowLabel peeringArrow whitebg" style={{position: 'relative', top: '5px', left:'25px'}}>${this.state.prices.dt_az}/GB DT AZ</div>
+                                                                            label: <div className="arrowLabel peeringArrow whitebg" style={{position: 'relative', top: '5px', left:'25px'}}>${this.state.prices.dt_az}/GB DT Inter-AZ</div>
                                                                         }]
                                                                     }}
                                                                 />
