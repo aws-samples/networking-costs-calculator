@@ -111,6 +111,7 @@ export default class Main extends React.Component {
               pergb_vpc: 0.99, // doubles as TGW data processing cost
               pergb_vpn: 0.99,
               pergb_cvpn: 0.99,
+              pergb_vpce: 0.01,
               pergb_dx: 0.99,
               pergb_nwfw:0.99,
               pergb_glb:0.99,
@@ -741,7 +742,7 @@ export default class Main extends React.Component {
                                                         icon='small' 
                                                         style={{width: '260px'}}
                                                         title={<div>
-                                                                <span>Private Link Supported Services</span>
+                                                                <span>Private Link Supportod Services</span>
                                                                 <span>3rd Party VPC</span>
                                                                 <span>Service Provider VPC</span>
                                                             </div>}
@@ -796,7 +797,7 @@ export default class Main extends React.Component {
 
                                                         {/* Account A Bottom Row*/}
                                                         <ArcherElement id="vpcaa"
-                                                            relations={((this.state.dx || this.state.vpn || this.state.interRegion || this.state.r53res_inbound || this.state.r53res_outbound || this.state.tgw ) ^ this.state.nwfw_c)? [ 
+                                                            relations={((this.state.dx || this.state.vpn || this.state.interRegion || this.state.r53res_inbound || this.state.r53res_outbound || this.state.tgw ) ^ (this.state.nwfw_c || this.state.vpce_c))? [ 
                                                                 {
                                                                 targetId:'t4-tgw',
                                                                 targetAnchor: 'top',
@@ -1944,7 +1945,7 @@ export default class Main extends React.Component {
                                                                 icon='small' 
                                                                 style={{width: '260px'}}
                                                                 title={<div>
-                                                                        <span>Private Link Supperted Services</span>
+                                                                        <span>Private Link Supported Services</span>
                                                                         <span>3rd Party VPC</span>
                                                                         <span>Service Provider VPC</span>
                                                                     </div>}

@@ -286,28 +286,39 @@ export default class Calc extends React.Component {
 
         let cost = 0;
 
-        let volume = t.volume;
+        let volume = this.normalizeToGb(t)
            
-        if(pergb_price.length === limit.length){
-
-            for (let i = 0; i < limit.length; i++) {
-                const element = limit[i];
+    for (let i = 0; i < limit.length; i++) {
+        
+        
+        if(volume - this.normalizeToGb(limit[i]) > 0){
+            if(i == limit.length -1){
                 
-                if(volume >= element){
-                    
-                    cost += Math.round(this.normalizeToGb({unit: t.unit, volume: element}) * pergb_price[i] * 1000) / 1000.0;
-                    volume -= element;
-                    
-
-                }else if (volume < element && volume !== 0 ){
-                    
-                    cost += Math.round(this.normalizeToGb({unit: t.unit, volume: volume}) * pergb_price[i] * 1000) / 1000.0;
-                    volume = 0;
-
-                }
+                let price = volume * pergb_price[i]
+                cost += price
+            }else{
+                volume = volume - this.normalizeToGb(limit[i])
+                let price = pergb_price[i] * this.normalizeToGb(limit[i])
+                cost += price
+                          
             }
 
+        }else if(volume - this.normalizeToGb(limit[i]) < 0){
+            let price = volume * pergb_price[i]
+            cost += price
+            
+            break
         }
+        else if (volume - this.normalizeToGb(limit[i]) == 0){
+            console.log("last " + volume)
+            let price = volume * pergb_price[i]
+            cost += price
+    }
+        
+        
+        
+    }
+        console.log(cost)
         return cost;
     }
 
@@ -325,7 +336,8 @@ export default class Calc extends React.Component {
             res.payingAccount = "Networking Account"
         }
         if(t.source === 'VPC Endpoint' && t.dest === 'Processed'){
-            res.cost = this.getTransferCostsWithLimit(t, this.props.parentState.prices.pergb_vpce, [1, 4, 5]);
+            console.log(this.props.parentState.prices.pergb_vpce)
+            res.cost = this.getTransferCostsWithLimit(t, this.props.parentState.prices.pergb_vpce, [{volume: 1, unit: "PB"}, {volume: 4, unit: "PB"}, {volume: 5, unit: "PB"}]);
             res.comments = "For 1 Endpoint"
             res.payingAccount = "Account A"
         }
@@ -877,9 +889,12 @@ export default class Calc extends React.Component {
                                 <div>AZs Deployed at</div>
 
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={this.state.vpce_az}
                                     onChange={(e) => {
+                                        if(this.state.vpce_endp < e.target.value){
+                                            this.setServicePropertyValue(e, 'vpce_endp')
+                                        }
                                         this.setServicePropertyValue(e, 'vpce_az')
                                     }}
                                 
@@ -892,10 +907,15 @@ export default class Calc extends React.Component {
                                 <div>VPC Endpoints</div>
 
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={this.state.vpce_endp}
                                     onChange={(e) => {
-                                        this.setServicePropertyValue(e, 'vpce_endp')
+                                        if(e.target.value < this.state.vpce_az){
+                                            console.log("Must be greater than AZ deployed at");
+                                        }else{
+                                            this.setServicePropertyValue(e, 'vpce_endp')
+                                        }
+                                        
                                     }}
                                 
                                 />
@@ -1377,6 +1397,8 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>VPCE</td>
+
+                                    
                                     <td>Account A & B</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_vpce}/h</td>
                                     <td>{this.props.parentState.currency}{(this.getAttMonthly(this.props.parentState.prices.att_vpce, att_tot, this.state.vpce_az * this.state.vpce_endp))}</td>
