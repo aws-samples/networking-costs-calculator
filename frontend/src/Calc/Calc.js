@@ -1423,7 +1423,7 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
-                                    <td>Account A</td>
+                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A</td> }
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>
                                     <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)}</td>
                                 </tr>

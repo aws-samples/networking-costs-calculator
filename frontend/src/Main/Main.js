@@ -374,8 +374,8 @@ export default class Main extends React.Component {
                 this.setState({nwfw: checked})
                 break;
             case 'nwfw_c':
-                this.EnableOrDisableServices(['tgw'], checked)
-                this.setState({nwfw_c: checked, tgw: should_tgw})
+                this.EnableOrDisableServices(['tgw', 'natg'], checked)
+                this.setState({nwfw_c: checked, tgw: should_tgw, natg:checked})
                 break;
             case 'dnsfw':
                 this.setState({dnsfw: checked});
@@ -468,7 +468,10 @@ export default class Main extends React.Component {
                 turn_on = this.state.nwfw;
                 break;
             case 'natg':
-                turn_on = (this.state.natg && (!this.state.nwfw && !this.state.glb_d) );
+                turn_on = (this.state.natg && (!this.state.nwfw && !this.state.glb_d) && !this.state.nwfw_c);
+                break;
+            case 'natg3':
+                turn_on = this.state.nwfw_c; 
                 break;
             case 'glb-endp-a':
                 turn_on = this.state.glb_d;
@@ -1799,7 +1802,7 @@ export default class Main extends React.Component {
                                                                     {/*  Right side of Netowrking Account */}
                                                                     { this.shouldShowServiceElement('NetAcc-Right') && 
                                                                     
-                                                                        <div style={{gridRow:'1 / 4'}}>
+                                                                        <div style={{gridColumn:'2 / 4'}}>
 
                                                                             {/*  VPC C */}
                                                                             <div className="vpcBlock" style={{paddingBottom:'10px', width: this.state.vpce_c? '175px' : this.state.nwfw_c? '150px': ''}}>
@@ -1813,9 +1816,40 @@ export default class Main extends React.Component {
                                                                                 </div>
 
                                                                                 {/* Inside of VPC C */}
-                                                                                <div style={{display: 'grid', gap:"10px", gridAutoFlow:'column'}}>
+                                                                                <div style={{display: 'grid', gap:"10px", gridAutoFlow:'row'}}>
                                                                                     
+                                                                                    <div style={{gridColumn:'2 / 4'}} ></div>
                                                                                     {/* Right Side of VPC C*/}
+                                                                                    
+                                                                                    { this.shouldShowServiceElement('natg3') && <div> 
+                                                                                        <Block src="NATG" height="50"
+                                                                                                icon='small' 
+                                                                                                style={{width: '100px'}}
+                                                                                                title={<div><span>NATG</span></div>}
+                                                                                                titlePaddingTop="15"
+                                                                                                globalMarginTop="8"
+                                                                                                archer_id="natg3"
+                                                                                                relations={{                                                
+                                                                                                    t8: [{
+                                                                                                        targetId: this.state.nwfw? 'b8-igw' : 'b8-net' ,
+                                                                                                        targetAnchor: 'bottom',
+                                                                                                        sourceAnchor: 'top',
+                                                                                                        style: {},
+                                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
+                                                                                                    }],
+                                                                                                    b8: this.state.nwfw_c? [{
+                                                                                                        targetId: 't8-nfwe-c' ,
+                                                                                                        targetAnchor: 'top',
+                                                                                                        sourceAnchor: 'bottom',
+                                                                                                        style: {},
+                                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
+                                                                                                    }] : [],
+
+                                                                                                }}
+                                                                                            /> 
+                                                                                            </div>
+                                                                                            }
+
                                                                                     { (this.state.r53res_inbound || this.state.r53res_outbound) && <div>
                                                                                             <div style={{display:"flex", flexWrap:'non-wrap', justifyContent:'space-around', gap:'10px'}} >
                                                                                                 
@@ -1872,7 +1906,7 @@ export default class Main extends React.Component {
                                                                                     {/* End of Right Side of VPC C */}
 
                                                                                     {/* Left Side of VPC C */}
-                                                                                    <div style={{gridRow: "1 / span 1", gridColumn:'1', justifyContent:'space-around', gap:'10px'}}>
+                                                                                    <div style={{gridColumn: "1 / span 1", gridColumn:'1', justifyContent:'space-around', gap:'10px'}}>
 
                                                                                         { this.shouldShowServiceElement('phzc') &&
                                                                                             <Block src="PHZ" height="50"
@@ -1895,10 +1929,10 @@ export default class Main extends React.Component {
                                                                                                 globalMarginTop="52"
                                                                                                 archer_id="nfwe-c"
                                                                                                 relations={{
-                                                                                                    t7: [{
-                                                                                                        targetId: 'r8-tgw',
-                                                                                                        targetAnchor: 'right',
-                                                                                                        sourceAnchor: 'bottom',
+                                                                                                    l2: [{
+                                                                                                        targetId: 'b9-tgw',
+                                                                                                        targetAnchor: 'bottom',
+                                                                                                        sourceAnchor: 'left',
                                                                                                         style: {strokeColor: '#AF2623'},
                                                                                                         label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '-5px'}}>To TGW, ${this.state.prices.pergb_vpc}/GB</div>
                                                                                                     }]
@@ -1928,6 +1962,7 @@ export default class Main extends React.Component {
                                                                                             />
                                                                                         }
                                                                                     </div>
+
                                                                                     {/* End of Left Side of VPC C */}
 
                                                                                 </div>
