@@ -63,7 +63,9 @@ export default class Calc extends React.Component {
             dx_ports:1,
             transfers: [],
             pops: [{"pop": "Loading...", "region": "Loading.."}],
-            defaultPop: "Loading..."
+            defaultPop: "Loading...",
+            ntag_with_nwfw_usage : false
+
         };
     }
 
@@ -112,7 +114,7 @@ export default class Calc extends React.Component {
 
     addDataTransfer = (e) => {
         if (!this.state.currentVolume || !this.state.currentUnit) return false;
-
+       
         switch(this.state.currentSource){
             case "Direct Connect":
                 this.props.parentState.transfers.push(
@@ -139,7 +141,10 @@ export default class Calc extends React.Component {
                         dest: "Internet",
                         volume: this.state.currentVolume,
                         unit: this.state.currentUnit,
+                        factorIn: true
                     });
+
+
                 break;
             case "Network Firewall":
                 this.props.parentState.transfers.push(
@@ -189,6 +194,78 @@ export default class Calc extends React.Component {
                 break;
 
         }
+
+        
+        if(this.state.currentSource == "NAT Gateway" || this.state.currentSource == "Network Firewall") {
+
+        let totalNATG =  parseInt(this.getTotalDataTransferFromService("NAT Gateway"))
+        let totalANF = parseInt(this.getTotalDataTransferFromService("Network Firewall"))
+
+            if(this.props.parentState.nwfw && this.props.parentState.natg && totalANF != 0){
+                
+
+                let tempTransfer = []
+        this.props.parentState.transfers.forEach( (element) => {
+            if(element.source != "NAT Gateway") tempTransfer.push(element);;
+        })
+
+        this.props.parentState.transfers = tempTransfer;
+        
+
+        //for(let transfer in this.props.parentState.transfers){
+        //    if(this.props.parentState.transfers[transfer].source == "NAT Gateway") this.props.parentState.transfers.splice(transfer,1)
+        //}
+                
+                let difference = totalANF - totalNATG;
+    
+                if(difference == 0){ // both processing volumes are the same
+                    
+                    this.props.parentState.transfers.push(
+                        {
+                            source: "NAT Gateway",
+                            dest: "Internet",
+                            volume: totalANF,
+                            unit: this.state.currentUnit,
+                            factorIn: false
+                        });
+                }else if(difference > 0 && totalNATG != 0){ // natg volume higher than anf volume
+                    
+                    this.props.parentState.transfers.push(
+                        {
+                            source: "NAT Gateway",
+                            dest: "Internet",
+                            volume: totalNATG,
+                            unit: this.state.currentUnit,
+                            factorIn: false
+                        });
+    
+                    
+                }else if (difference < 0 && totalANF != 0){ // natg volume less than anf volume
+                    
+                    this.props.parentState.transfers.push(
+                        {
+                            source: "NAT Gateway",
+                            dest: "Internet",
+                            volume: totalANF,
+                            unit: this.state.currentUnit,
+                            factorIn: false
+                        });
+                        this.props.parentState.transfers.push(
+                            {
+                                source: "NAT Gateway",
+                                dest: "Internet",
+                                volume: Math.abs(difference),
+                                unit: this.state.currentUnit,
+                                factorIn: true
+                            });
+                    
+                }
+    
+    
+            }
+
+        }
+        
         this.setState({transfers: this.props.parentState.transfers});
         //send event for analytics
         /*Analytics.record({
@@ -312,7 +389,8 @@ export default class Calc extends React.Component {
 
     getTransferDetails = (t) => {
         var res = {};
-
+        
+        console.log(t);
         if(t.source === 'Direct Connect' && t.dest === 'Processed'){
             res.cost = this.getTransferCosts(t, this.props.parentState.prices.dx_dto);
             res.comments = "N/A"
@@ -334,8 +412,9 @@ export default class Calc extends React.Component {
             res.payingAccount = "Attachment Owner"
         }
         if(t.source === 'NAT Gateway' && t.dest === 'Internet'){
-            res.cost = this.getTransferCosts(t, this.props.parentState.prices.pergb_natg);
-            res.comments = "N/A"
+            console.log(t.factorIn);
+            res.cost = t.factorIn? this.getTransferCosts(t, this.props.parentState.prices.pergb_natg) : this.getTransferCosts(t,0);
+            res.comments = t.factorIn? "N/A" : "Matches Usage as ANF"
             res.payingAccount = "Account A"
         }
         if(t.source === 'Network Firewall' && t.dest === 'Processed'){
@@ -592,6 +671,35 @@ export default class Calc extends React.Component {
             
         
         
+    }
+
+    getDataTransfersFromService(fromService){
+        let existingTransfers = []
+        this.props.parentState.transfers.forEach( (element) => {
+            if(element.source === fromService) existingTransfers.push(element);
+        })
+
+        return existingTransfers
+
+    }
+
+    getTotalDataTransferFromService(fromService){
+        console.log("getting transfers");
+        let allTransfers = this.getDataTransfersFromService(fromService);
+
+        let totalDataTransfer = 0;
+        allTransfers.forEach( (dataTransfer) => {
+
+            totalDataTransfer += parseInt(dataTransfer.volume)
+        
+        })
+
+        return totalDataTransfer
+    }
+
+    calculateNatgDiscount(){
+
+
     }
 
     render(){
@@ -1563,6 +1671,7 @@ export default class Calc extends React.Component {
                                         let is_peering = (t.source==='VPC D' || t.dest==='VPC D');
                                         //if (!this.props.parentState.peering && is_peering) return "";
                                         let transfer_details = this.getTransferDetails(t);
+                                        
                                         if(t.source === "TGW Attachment"){
                                             transfer_tot += transfer_details.cost * this.state.tgw_attachments;
                                         }else{

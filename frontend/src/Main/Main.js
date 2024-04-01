@@ -137,7 +137,7 @@ export default class Main extends React.Component {
           },
           disabled_services : [], // tracks services that should be disabled, add or remove to this list when turning on a service
           not_supported : [], // tracks services that will be disabled, add to this list when one or more pricing details for a service are not avaiable from the API
-          using_default_pricng : false
+        
         };
     }
 
@@ -924,7 +924,7 @@ export default class Main extends React.Component {
                                                                                                 style={{width: '100px'}}
                                                                                                 title={<div><span>NFW</span></div>}
                                                                                                 titlePaddingTop="15"
-                                                                                                globalMarginTop="8"
+                                                                                                globalMarginTop=""
                                                                                                 archer_id="nfwe"
                                                                                                 relations={{
                                                                                                     t8: [{
@@ -932,7 +932,7 @@ export default class Main extends React.Component {
                                                                                                         targetAnchor: 'bottom',
                                                                                                         sourceAnchor: 'top',
                                                                                                         style: {strokeColor: '#AF2623'},
-                                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
+                                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '0px'}}></div>
                                                                                                     }]
                                                                                                 }}
                                                                                             />
