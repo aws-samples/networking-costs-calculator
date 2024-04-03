@@ -1532,8 +1532,15 @@ export default class Calc extends React.Component {
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
                                     {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A</td> }
-                                    <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>
-                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)}</td>
+                                    
+
+                                    { <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>}
+
+                                    { ( (this.state.nwfw_endpoints >= this.state.natg_count)  && 
+                                    ((this.state.nwfw_usage >= 24 && this.state.nwfw_usage_type == 'hours') || (this.state.nwfw_usage >= 1 && this.state.nwfw_usage_type == 'days') ) )? 
+                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)} </td> : 
+                                    <td>{this.props.parentState.currency} {this.getAttMonthly(this.props.parentState.prices.att_natg, att_tot, (this.state.natg_count - this.state.nwfw_endpoints) )} </td>
+                                    }
                                 </tr>
                                 }
                                 {this.props.parentState.interRegion && 
