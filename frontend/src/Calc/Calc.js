@@ -298,29 +298,27 @@ export default class Calc extends React.Component {
 
             
             if(this.state.nwfw_usage_type == 'hours'){
-                console.log("natg usage in hours");
+
 
                 if(this.state.natg_count >= this.state.nwfw_endpoints){
-                    
-                    console.log("natg endpoints bigger or equal than nwfe");
+
                     anfMatchedHours = this.state.nwfw_usage
 
                 }else if(this.state.natg_count < this.state.nwfw_endpoints){
-                                     
-                    console.log("natg endpoints smaller than nwfe");
+
                     anfMatchedHours = this.state.nwfw_usage * this.state.nwfw_endpoints
 
                 }
 
             }else if(this.state.nwfw_usage_type == 'days'){
-                console.log("natg usage in days");
+
                 if(this.state.natg_count >= this.state.nwfw_endpoints){
-                    console.log("natg endpoints bigger or equal than nwfe");
+
                     anfMatchedHours = 24 * this.state.nwfw_usage
 
                 }else if(this.state.natg_count < this.state.nwfw_endpoints){
-                    anfMatchedHours = 24 * this.state.nwfw_usage * this.state.nwfw_endpoints
 
+                    anfMatchedHours = 24 * this.state.nwfw_usage * this.state.nwfw_endpoints
 
                 }
             }
