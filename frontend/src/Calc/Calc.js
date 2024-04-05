@@ -291,9 +291,58 @@ export default class Calc extends React.Component {
         //takes in a price p
         //total costs object tot
         // count int that multiplies the costs by, example, number of endpoints on a vpc
-        let res = Math.round(p * 730 * 100) / 100.0; // assumes service is at 100% utilization
+        
+        let anfMatchedHours = 0;
+
+        if(this.props.parentState.nwfw && this.props.parentState.natg){
+
+            
+            if(this.state.nwfw_usage_type == 'hours'){
+                console.log("natg usage in hours");
+
+                if(this.state.natg_count >= this.state.nwfw_endpoints){
+                    
+                    console.log("natg endpoints bigger or equal than nwfe");
+                    anfMatchedHours = this.state.nwfw_usage
+
+                }else if(this.state.natg_count < this.state.nwfw_endpoints){
+                                     
+                    console.log("natg endpoints smaller than nwfe");
+                    anfMatchedHours = this.state.nwfw_usage * this.state.nwfw_endpoints
+
+                }
+
+            }else if(this.state.nwfw_usage_type == 'days'){
+                console.log("natg usage in days");
+                if(this.state.natg_count >= this.state.nwfw_endpoints){
+                    console.log("natg endpoints bigger or equal than nwfe");
+                    anfMatchedHours = 24 * this.state.nwfw_usage
+
+                }else if(this.state.natg_count < this.state.nwfw_endpoints){
+                    anfMatchedHours = 24 * this.state.nwfw_usage * this.state.nwfw_endpoints
+
+
+                }
+            }
+
+            
+
+
+            
+            
+        }
+
+
+        let res = Math.round(p * (730 - anfMatchedHours) * 100) / 100.0; // assumes service is at 100% utilization
+
+        console.log("count " + count + " res " + res);
+
         if(count){res = res * count}
+        
+        if(count == 0) {res = 0}
         tot.tot += res;
+
+        if(res < 0) {res = 0}
         return res.toFixed(2);
     }
 
@@ -414,7 +463,7 @@ export default class Calc extends React.Component {
         if(t.source === 'NAT Gateway' && t.dest === 'Internet'){
             console.log(t.factorIn);
             res.cost = t.factorIn? this.getTransferCosts(t, this.props.parentState.prices.pergb_natg) : this.getTransferCosts(t,0);
-            res.comments = t.factorIn? "N/A" : "Matches Usage as ANF"
+            res.comments = t.factorIn? "N/A" : "Matched ANF Usage"
             res.payingAccount = "Account A"
         }
         if(t.source === 'Network Firewall' && t.dest === 'Processed'){
@@ -1531,16 +1580,15 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
-                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A</td> }
+                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A {(this.state.natg_count - this.state.nwfw_endpoints) == 0 ? "- Matches ANF Usage" : ""}</td> }
                                     
+                                    {console.log(this.state.natg_count - this.state.nwfw_endpoints)}
 
                                     { <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>}
 
-                                    { ( (this.state.nwfw_endpoints >= this.state.natg_count)  && 
-                                    ((this.state.nwfw_usage >= 24 && this.state.nwfw_usage_type == 'hours') || (this.state.nwfw_usage >= 1 && this.state.nwfw_usage_type == 'days') ) )? 
-                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)} </td> : 
-                                    <td>{this.props.parentState.currency} {this.getAttMonthly(this.props.parentState.prices.att_natg, att_tot, (this.state.natg_count - this.state.nwfw_endpoints) )} </td>
-                                    }
+                                    <td> {console.log("here")} {this.props.parentState.currency} {this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)} </td>
+                                
+                                    
                                 </tr>
                                 }
                                 {this.props.parentState.interRegion && 
