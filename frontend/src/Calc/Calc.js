@@ -335,7 +335,6 @@ export default class Calc extends React.Component {
             res.payingAccount = "Networking Account"
         }
         if(t.source === 'VPC Endpoint' && t.dest === 'Processed'){
-            console.log(this.props.parentState.prices.pergb_vpce)
             res.cost = this.getTransferCostsWithLimit(t, this.props.parentState.prices.pergb_vpce, [{volume: 1, unit: "PB"}, {volume: 4, unit: "PB"}, {volume: 5, unit: "PB"}]);
             res.comments = "For 1 Endpoint"
             res.payingAccount = "Account A"
@@ -915,7 +914,6 @@ export default class Calc extends React.Component {
                                         }else{
                                             this.setServicePropertyValue(e, 'vpce_endp')
                                         }
-                                        
                                     }}
                                 
                                 />
