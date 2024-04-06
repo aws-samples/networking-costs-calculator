@@ -846,7 +846,7 @@ export default class Main extends React.Component {
                                                                                         targetAnchor: 'bottom',
                                                                                         sourceAnchor: 'top',
                                                                                         style: {},
-                                                                                        label: <div className="arrowLabel whitebg"></div>
+                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px', color:'#AF2623'}}>${this.state.prices.pergb_nwfw}/GB DTO</div>
                                                                                         //label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
                                                                                     }] : [],
                                                                                     t2: (this.state.natg && this.state.glb_d)? [{
@@ -921,9 +921,10 @@ export default class Main extends React.Component {
                                                                                         { this.shouldShowServiceElement('nwfwe') &&
                                                                                             <Block src="NFWE" height="50" 
                                                                                                 icon='small'
-                                                                                                style={{width: '100px'}}
+                                                                                                style={{width: '120px'}}
                                                                                                 title={<div><span>NFW</span></div>}
-                                                                                                titlePaddingTop="15"
+                                                                                                titlePaddingTop="10"
+                                                                                                iconLabel= { "$" + this.state.prices.pergb_nwfw +"/GB DP"}
                                                                                                 globalMarginTop=""
                                                                                                 archer_id="nfwe"
                                                                                                 relations={{
@@ -932,7 +933,7 @@ export default class Main extends React.Component {
                                                                                                         targetAnchor: 'bottom',
                                                                                                         sourceAnchor: 'top',
                                                                                                         style: {strokeColor: '#AF2623'},
-                                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '0px'}}></div>
+                                                                                                        label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '0px'}}> </div>
                                                                                                     }]
                                                                                                 }}
                                                                                             />
@@ -1298,7 +1299,7 @@ export default class Main extends React.Component {
                                                                                             targetAnchor: 'bottom',
                                                                                             sourceAnchor: 'top',
                                                                                             style: {},
-                                                                                            label: <div className="arrowLabel whitebg"></div>
+                                                                                            label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '20px', color:'#AF2623'}} >${this.state.prices.pergb_nwfw}/GB DTO</div>
                                                                                             //label: <div className="arrowLabel whitebg" style={{position: 'relative', top: '5px'}}></div>
                                                                                         }] : [],
                                                                                         b2: (this.state.glb_d)? [{
@@ -1359,9 +1360,10 @@ export default class Main extends React.Component {
                                                                                         { this.shouldShowServiceElement('nwfw-b') &&
                                                                                             <Block src="NFWE" height="50" 
                                                                                                 icon='small'
-                                                                                                style={{width: '100px'}}
+                                                                                                style={{width: '120px'}}
                                                                                                 title={<div><span>NFW</span></div>}
-                                                                                                titlePaddingTop="15"
+                                                                                                titlePaddingTop="10"
+                                                                                                iconLabel= { "$" + this.state.prices.pergb_nwfw +"/GB DP"}
                                                                                                 globalMarginTop="8"
                                                                                                 archer_id="nfwe-b"
                                                                                                 relations={{
@@ -1925,6 +1927,7 @@ export default class Main extends React.Component {
                                                                                                 icon='small'
                                                                                                 style={{width: '100px', marginLeft: '20px'}}
                                                                                                 title={<div><span>NFW</span></div>}
+                                                                                            
                                                                                                 titlePaddingTop="15"
                                                                                                 globalMarginTop="52"
                                                                                                 archer_id="nfwe-c"

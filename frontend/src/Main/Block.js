@@ -21,6 +21,7 @@ interface BlockProps {
     height: Integer,
     src: String,
     title: JSX,
+    iconLabel: String,
     titlePaddingTop: Integer,
     globalMarginTop: Integer,
     archer_id: String,
@@ -92,7 +93,7 @@ export default class Block extends React.Component<BlockProps, {}> {
             } else if (this.props.src==='VPC'){
                 extraStyle.b5 = {top: 16};
             } else if (this.props.src==='NFWE'){
-                extraStyle.b8 = {top: 20};
+                extraStyle.b8 = {top: 28};
                 extraStyle.t7 = {top: -22};
             } else if (this.props.src==='ENDP'){
                 extraStyle.b2 = {top: 31};
@@ -172,6 +173,15 @@ export default class Block extends React.Component<BlockProps, {}> {
                     <span style={{ paddingTop: this.props.titlePaddingTop + 'px' }}>
                         {this.props.title}
                     </span>
+                    { this.props.iconLabel &&
+                    <span style={{fontSize:"10px"}}>
+                        {this.props.iconLabel}
+                </span>
+                    }
+
+                </div>
+                <div style={{}}>
+
                 </div>
 
 
