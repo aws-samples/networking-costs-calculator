@@ -136,8 +136,10 @@ export default class Main extends React.Component {
               vpnh_vpc:0.99,
               pergb_vpce:[0.99,0.99,0.99] // data processing costs for VPC Endpoint, has 3 different limits <1 PB (first index), 1 to 4 PB(second index) and >4 PB (thrid index).
           },
+          supported_services: [],
           disabled_services : [], // tracks services that should be disabled, add or remove to this list when turning on a service
           not_supported : [], // tracks services that will be disabled, add to this list when one or more pricing details for a service are not avaiable from the API
+          required_services: []
         
         };
     }
@@ -210,7 +212,7 @@ export default class Main extends React.Component {
             {
                 ids: requested_ids
             }});
-        //console.log(prices);
+        console.log(prices);
         
         this.setState({ // updates the current pricing states with the values retrived from the database
             preloader_active: false,
@@ -257,7 +259,7 @@ export default class Main extends React.Component {
                     prices.data.bulkPrices[31] ? prices.data.bulkPrices[31].pricePerUnit : this.EnableOrDisableServices(['vpce-d', 'vpce-c'], true, true)
                 ],
 
-                vpnh_vpc: prices.data.bulkPrices[32] ? prices.data.bulkPrices[32].pricePerUnit : this.EnableOrDisableServices(['vpn'], true, true),
+                vpnh_vpc: prices.data.bulkPrices[32] ? prices.data.bulkPrices[32].pricePerUnit : this.EnableOrDisableServices(['vpn'], false, false),
                 
             }
         })
@@ -336,11 +338,15 @@ export default class Main extends React.Component {
                 this.setState({dx: checked, tgw: should_tgw});
                 break;
             case 'vpn':
+                //checked? this.state.required_services.push('tgw') : this.removeFromArray('tgw')
+
                 if(this.state.r53res_inbound || this.state.r53res_outbound){
                     this.EnableOrDisableServices(['dx'], checked)
                 }
                 this.EnableOrDisableServices(['tgw'], checked)
+
                 this.setState({vpn: checked, tgw: should_tgw});
+            
                 break;
             case 'peering':
                 this.setState({peering: checked});
@@ -376,7 +382,7 @@ export default class Main extends React.Component {
                 break;
             case 'nwfw_c':
                 this.EnableOrDisableServices(['tgw', 'natg'], checked)
-                this.setState({nwfw_c: checked, tgw: should_tgw, natg:checked})
+                this.setState({nwfw_c: checked, tgw: should_tgw , natg:checked})
                 break;
             case 'dnsfw':
                 this.setState({dnsfw: checked});
@@ -395,8 +401,11 @@ export default class Main extends React.Component {
                 this.setState({glb_d: checked});
                 break;   
             case 'vpce_d':
+                if(checked == false){
+                    this.EnableOrDisableServices(['tgw'], false)
+                }
                 this.EnableOrDisableServices(['vpn', 'natg', 'nwfw', 'glb_d', 'dx', 'r53res_outbound', 'r53res_inbound', 'glb_c', 'interRegion', 'vpce_c'],checked)
-                this.setState({vpce_d: checked})
+                this.setState({vpce_d: checked, tgw: checked})
                 break;
             case 'vpce_c':
                 this.EnableOrDisableServices(['vpce_d'],checked)
@@ -410,6 +419,7 @@ export default class Main extends React.Component {
                 break;
         }
 
+        this.requiresServices()
     }
     
     interRegionChange = (checked, e) => {
