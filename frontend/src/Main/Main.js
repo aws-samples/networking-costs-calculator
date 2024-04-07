@@ -137,7 +137,8 @@ export default class Main extends React.Component {
           },
           disabled_services : [], // tracks services that should be disabled, add or remove to this list when turning on a service
           not_supported : [], // tracks services that will be disabled, add to this list when one or more pricing details for a service are not avaiable from the API
-          using_default_pricng : false
+          using_default_pricng : false,
+          calc_disabled: false,
         };
     }
 
@@ -259,11 +260,19 @@ export default class Main extends React.Component {
                 vpnh_vpc: prices.data.bulkPrices[32] ? prices.data.bulkPrices[32].pricePerUnit : this.EnableOrDisableServices(['vpn'], true, true),
                 
             }
+        }, () => {
+            //console.log((prices?.data?.bulkPrices[0])?.pricePerUnit === 0.99);
+            if (this.state.prices.att_vpc === 0.99 && this.state.prices.pergb_vpc === 0.99){
+                alert('There was an error retrieving the pricess from the server. Please refresh or check your deployment.')
+                this.setState({calc_disabled: true});
+            } else {
+                //finally - notify our calculator component about the region change
+                //console.log(this.state.prices);
+                this.calculatorRef.current.regionChange();
+            }
         })
-        //finally - notify our calculator component about the region change
-        //console.log(this.state.prices);
-        this.calculatorRef.current.regionChange();
     }
+
 
     removeFromArray = (serviceCode) => {
         const index = this.state.disabled_services.indexOf(serviceCode);
@@ -628,7 +637,19 @@ export default class Main extends React.Component {
         
         
         return (
+
             <LoadingOverlay active={this.state.preloader_active} text='Retrieving updated prices...' spinner >
+
+            { this.state.calc_disabled &&
+                <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', color: '#534095',
+                    textAlign: 'center', verticalAlign: 'middle', lineHeight: '400px', fontSize: '16px', fontWeight: '500',
+                    backgroundColor: 'rgba(220, 220, 220, 0.6)', zIndex: 100}}>
+                    
+                    Price retrieval failed, please refresh or check your deployment.
+
+                </div>
+            }
+
 
                 <div style={{position: 'relative'}}>
                     {/* Region Selection Area */}
