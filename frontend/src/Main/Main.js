@@ -139,7 +139,7 @@ export default class Main extends React.Component {
           supported_services: [],
           disabled_services : [], // tracks services that should be disabled, add or remove to this list when turning on a service
           not_supported : [], // tracks services that will be disabled, add to this list when one or more pricing details for a service are not avaiable from the API
-          required_services: []
+          required_services: [],
           using_default_pricng : false,
           calc_disabled: false,
         };
