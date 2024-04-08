@@ -63,7 +63,9 @@ export default class Calc extends React.Component {
             dx_ports:1,
             transfers: [],
             pops: [{"pop": "Loading...", "region": "Loading.."}],
-            defaultPop: "Loading..."
+            defaultPop: "Loading...",
+            ntag_with_nwfw_usage : false
+
         };
     }
 
@@ -112,7 +114,7 @@ export default class Calc extends React.Component {
 
     addDataTransfer = (e) => {
         if (!this.state.currentVolume || !this.state.currentUnit) return false;
-
+       
         switch(this.state.currentSource){
             case "Direct Connect":
                 this.props.parentState.transfers.push(
@@ -139,7 +141,10 @@ export default class Calc extends React.Component {
                         dest: "Internet",
                         volume: this.state.currentVolume,
                         unit: this.state.currentUnit,
+                        factorIn: true
                     });
+
+
                 break;
             case "Network Firewall":
                 this.props.parentState.transfers.push(
@@ -189,6 +194,78 @@ export default class Calc extends React.Component {
                 break;
 
         }
+
+        
+        if(this.state.currentSource == "NAT Gateway" || this.state.currentSource == "Network Firewall") {
+
+        let totalNATG =  parseInt(this.getTotalDataTransferFromService("NAT Gateway"))
+        let totalANF = parseInt(this.getTotalDataTransferFromService("Network Firewall"))
+
+            if(this.props.parentState.nwfw && this.props.parentState.natg && totalANF != 0){
+                
+
+                let tempTransfer = []
+        this.props.parentState.transfers.forEach( (element) => {
+            if(element.source != "NAT Gateway") tempTransfer.push(element);;
+        })
+
+        this.props.parentState.transfers = tempTransfer;
+        
+
+        //for(let transfer in this.props.parentState.transfers){
+        //    if(this.props.parentState.transfers[transfer].source == "NAT Gateway") this.props.parentState.transfers.splice(transfer,1)
+        //}
+                
+                let difference = totalANF - totalNATG;
+    
+                if(difference == 0){ // both processing volumes are the same
+                    
+                    this.props.parentState.transfers.push(
+                        {
+                            source: "NAT Gateway",
+                            dest: "Internet",
+                            volume: totalANF,
+                            unit: this.state.currentUnit,
+                            factorIn: false
+                        });
+                }else if(difference > 0 && totalNATG != 0){ // natg volume higher than anf volume
+                    
+                    this.props.parentState.transfers.push(
+                        {
+                            source: "NAT Gateway",
+                            dest: "Internet",
+                            volume: totalNATG,
+                            unit: this.state.currentUnit,
+                            factorIn: false
+                        });
+    
+                    
+                }else if (difference < 0 && totalANF != 0){ // natg volume less than anf volume
+                    
+                    this.props.parentState.transfers.push(
+                        {
+                            source: "NAT Gateway",
+                            dest: "Internet",
+                            volume: totalANF,
+                            unit: this.state.currentUnit,
+                            factorIn: false
+                        });
+                        this.props.parentState.transfers.push(
+                            {
+                                source: "NAT Gateway",
+                                dest: "Internet",
+                                volume: Math.abs(difference),
+                                unit: this.state.currentUnit,
+                                factorIn: true
+                            });
+                    
+                }
+    
+    
+            }
+
+        }
+        
         this.setState({transfers: this.props.parentState.transfers});
         //send event for analytics
         /*Analytics.record({
@@ -214,9 +291,56 @@ export default class Calc extends React.Component {
         //takes in a price p
         //total costs object tot
         // count int that multiplies the costs by, example, number of endpoints on a vpc
-        let res = Math.round(p * 730 * 100) / 100.0; // assumes service is at 100% utilization
+        
+        let anfMatchedHours = 0;
+
+        if(this.props.parentState.nwfw && this.props.parentState.natg){
+
+            
+            if(this.state.nwfw_usage_type == 'hours'){
+
+
+                if(this.state.natg_count >= this.state.nwfw_endpoints){
+
+                    anfMatchedHours = this.state.nwfw_usage
+
+                }else if(this.state.natg_count < this.state.nwfw_endpoints){
+
+                    anfMatchedHours = this.state.nwfw_usage * this.state.nwfw_endpoints
+
+                }
+
+            }else if(this.state.nwfw_usage_type == 'days'){
+
+                if(this.state.natg_count >= this.state.nwfw_endpoints){
+
+                    anfMatchedHours = 24 * this.state.nwfw_usage
+
+                }else if(this.state.natg_count < this.state.nwfw_endpoints){
+
+                    anfMatchedHours = 24 * this.state.nwfw_usage * this.state.nwfw_endpoints
+
+                }
+            }
+
+            
+
+
+            
+            
+        }
+
+
+        let res = Math.round(p * (730 - anfMatchedHours) * 100) / 100.0; // assumes service is at 100% utilization
+
+        console.log("count " + count + " res " + res);
+
         if(count){res = res * count}
+        
+        if(count == 0) {res = 0}
         tot.tot += res;
+
+        if(res < 0) {res = 0}
         return res.toFixed(2);
     }
 
@@ -285,34 +409,46 @@ export default class Calc extends React.Component {
 
         let cost = 0;
 
-        let volume = t.volume;
+        let volume = this.normalizeToGb(t)
            
-        if(pergb_price.length === limit.length){
-
-            for (let i = 0; i < limit.length; i++) {
-                const element = limit[i];
+    for (let i = 0; i < limit.length; i++) {
+        
+        
+        if(volume - this.normalizeToGb(limit[i]) > 0){
+            if(i == limit.length -1){
                 
-                if(volume >= element){
-                    
-                    cost += Math.round(this.normalizeToGb({unit: t.unit, volume: element}) * pergb_price[i] * 1000) / 1000.0;
-                    volume -= element;
-                    
-
-                }else if (volume < element && volume !== 0 ){
-                    
-                    cost += Math.round(this.normalizeToGb({unit: t.unit, volume: volume}) * pergb_price[i] * 1000) / 1000.0;
-                    volume = 0;
-
-                }
+                let price = volume * pergb_price[i]
+                cost += price
+            }else{
+                volume = volume - this.normalizeToGb(limit[i])
+                let price = pergb_price[i] * this.normalizeToGb(limit[i])
+                cost += price
+                          
             }
 
+        }else if(volume - this.normalizeToGb(limit[i]) < 0){
+            let price = volume * pergb_price[i]
+            cost += price
+            
+            break
         }
+        else if (volume - this.normalizeToGb(limit[i]) == 0){
+            console.log("last " + volume)
+            let price = volume * pergb_price[i]
+            cost += price
+    }
+        
+        
+        
+    }
+        console.log(cost)
         return cost;
     }
 
     getTransferDetails = (t) => {
         var res = {};
-
+        
+        console.log(t);
         if(t.source === 'Direct Connect' && t.dest === 'Processed'){
             res.cost = this.getTransferCosts(t, this.props.parentState.prices.dx_dto);
             res.comments = "N/A"
@@ -324,7 +460,7 @@ export default class Calc extends React.Component {
             res.payingAccount = "Networking Account"
         }
         if(t.source === 'VPC Endpoint' && t.dest === 'Processed'){
-            res.cost = this.getTransferCostsWithLimit(t, this.props.parentState.prices.pergb_vpce, [1, 4, 5]);
+            res.cost = this.getTransferCostsWithLimit(t, this.props.parentState.prices.pergb_vpce, [{volume: 1, unit: "PB"}, {volume: 4, unit: "PB"}, {volume: 5, unit: "PB"}]);
             res.comments = "For 1 Endpoint"
             res.payingAccount = "Account A"
         }
@@ -334,8 +470,9 @@ export default class Calc extends React.Component {
             res.payingAccount = "Attachment Owner"
         }
         if(t.source === 'NAT Gateway' && t.dest === 'Internet'){
-            res.cost = this.getTransferCosts(t, this.props.parentState.prices.pergb_natg);
-            res.comments = "N/A"
+            console.log(t.factorIn);
+            res.cost = t.factorIn? this.getTransferCosts(t, this.props.parentState.prices.pergb_natg) : this.getTransferCosts(t,0);
+            res.comments = t.factorIn? "N/A" : "Matched ANF Usage"
             res.payingAccount = "Account A"
         }
         if(t.source === 'Network Firewall' && t.dest === 'Processed'){
@@ -592,6 +729,35 @@ export default class Calc extends React.Component {
             
         
         
+    }
+
+    getDataTransfersFromService(fromService){
+        let existingTransfers = []
+        this.props.parentState.transfers.forEach( (element) => {
+            if(element.source === fromService) existingTransfers.push(element);
+        })
+
+        return existingTransfers
+
+    }
+
+    getTotalDataTransferFromService(fromService){
+        console.log("getting transfers");
+        let allTransfers = this.getDataTransfersFromService(fromService);
+
+        let totalDataTransfer = 0;
+        allTransfers.forEach( (dataTransfer) => {
+
+            totalDataTransfer += parseInt(dataTransfer.volume)
+        
+        })
+
+        return totalDataTransfer
+    }
+
+    calculateNatgDiscount(){
+
+
     }
 
     render(){
@@ -877,9 +1043,12 @@ export default class Calc extends React.Component {
                                 <div>AZs Deployed at</div>
 
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={this.state.vpce_az}
                                     onChange={(e) => {
+                                        if(this.state.vpce_endp < e.target.value){
+                                            this.setServicePropertyValue(e, 'vpce_endp')
+                                        }
                                         this.setServicePropertyValue(e, 'vpce_az')
                                     }}
                                 
@@ -892,10 +1061,14 @@ export default class Calc extends React.Component {
                                 <div>VPC Endpoints</div>
 
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={this.state.vpce_endp}
                                     onChange={(e) => {
-                                        this.setServicePropertyValue(e, 'vpce_endp')
+                                        if(e.target.value < this.state.vpce_az){
+                                            console.log("Must be greater than AZ deployed at");
+                                        }else{
+                                            this.setServicePropertyValue(e, 'vpce_endp')
+                                        }
                                     }}
                                 
                                 />
@@ -1377,6 +1550,8 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>VPCE</td>
+
+                                    
                                     <td>Account A & B</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_vpce}/h</td>
                                     <td>{this.props.parentState.currency}{(this.getAttMonthly(this.props.parentState.prices.att_vpce, att_tot, this.state.vpce_az * this.state.vpce_endp))}</td>
@@ -1423,9 +1598,15 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
-                                    <td>Account A</td>
-                                    <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>
-                                    <td>{this.props.parentState.currency}{this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)}</td>
+                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A {(this.state.natg_count - this.state.nwfw_endpoints) == 0 ? "- Matches ANF Usage" : ""}</td> }
+                                    
+                                    {console.log(this.state.natg_count - this.state.nwfw_endpoints)}
+
+                                    { <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>}
+
+                                    <td> {console.log("here")} {this.props.parentState.currency} {this.getAttMonthly(this.props.parentState.prices.att_natg , att_tot, this.state.natg_count)} </td>
+                                
+                                    
                                 </tr>
                                 }
                                 {this.props.parentState.interRegion && 
@@ -1563,6 +1744,7 @@ export default class Calc extends React.Component {
                                         let is_peering = (t.source==='VPC D' || t.dest==='VPC D');
                                         //if (!this.props.parentState.peering && is_peering) return "";
                                         let transfer_details = this.getTransferDetails(t);
+                                        
                                         if(t.source === "TGW Attachment"){
                                             transfer_tot += transfer_details.cost * this.state.tgw_attachments;
                                         }else{
