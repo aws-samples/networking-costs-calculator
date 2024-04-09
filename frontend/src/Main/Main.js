@@ -410,7 +410,7 @@ export default class Main extends React.Component {
                 this.setState({glb_d: checked});
                 break;   
             case 'vpce_d':
-                if(checked == false){
+                if(checked === false){
                     this.EnableOrDisableServices(['tgw'], false)
                 }
                 this.EnableOrDisableServices(['vpn', 'natg', 'nwfw', 'glb_d', 'dx', 'r53res_outbound', 'r53res_inbound', 'glb_c', 'interRegion', 'vpce_c'],checked)

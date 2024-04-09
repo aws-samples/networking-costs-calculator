@@ -196,29 +196,29 @@ export default class Calc extends React.Component {
         }
 
         
-        if(this.state.currentSource == "NAT Gateway" || this.state.currentSource == "Network Firewall") {
+        if(this.state.currentSource === "NAT Gateway" || this.state.currentSource === "Network Firewall") {
 
         let totalNATG =  parseInt(this.getTotalDataTransferFromService("NAT Gateway"))
         let totalANF = parseInt(this.getTotalDataTransferFromService("Network Firewall"))
 
-            if(this.props.parentState.nwfw && this.props.parentState.natg && totalANF != 0){
+            if(this.props.parentState.nwfw && this.props.parentState.natg && totalANF !== 0){
                 
 
                 let tempTransfer = []
         this.props.parentState.transfers.forEach( (element) => {
-            if(element.source != "NAT Gateway") tempTransfer.push(element);;
+            if(element.source !== "NAT Gateway") tempTransfer.push(element);;
         })
 
         this.props.parentState.transfers = tempTransfer;
         
 
         //for(let transfer in this.props.parentState.transfers){
-        //    if(this.props.parentState.transfers[transfer].source == "NAT Gateway") this.props.parentState.transfers.splice(transfer,1)
+        //    if(this.props.parentState.transfers[transfer].source === "NAT Gateway") this.props.parentState.transfers.splice(transfer,1)
         //}
                 
                 let difference = totalANF - totalNATG;
     
-                if(difference == 0){ // both processing volumes are the same
+                if(difference === 0){ // both processing volumes are the same
                     
                     this.props.parentState.transfers.push(
                         {
@@ -228,7 +228,7 @@ export default class Calc extends React.Component {
                             unit: this.state.currentUnit,
                             factorIn: false
                         });
-                }else if(difference > 0 && totalNATG != 0){ // natg volume higher than anf volume
+                }else if(difference > 0 && totalNATG !== 0){ // natg volume higher than anf volume
                     
                     this.props.parentState.transfers.push(
                         {
@@ -240,7 +240,7 @@ export default class Calc extends React.Component {
                         });
     
                     
-                }else if (difference < 0 && totalANF != 0){ // natg volume less than anf volume
+                }else if (difference < 0 && totalANF !== 0){ // natg volume less than anf volume
                     
                     this.props.parentState.transfers.push(
                         {
@@ -297,7 +297,7 @@ export default class Calc extends React.Component {
         if(this.props.parentState.nwfw && this.props.parentState.natg){
 
             
-            if(this.state.nwfw_usage_type == 'hours'){
+            if(this.state.nwfw_usage_type === 'hours'){
 
 
                 if(this.state.natg_count >= this.state.nwfw_endpoints){
@@ -310,7 +310,7 @@ export default class Calc extends React.Component {
 
                 }
 
-            }else if(this.state.nwfw_usage_type == 'days'){
+            }else if(this.state.nwfw_usage_type === 'days'){
 
                 if(this.state.natg_count >= this.state.nwfw_endpoints){
 
@@ -337,7 +337,7 @@ export default class Calc extends React.Component {
 
         if(count){res = res * count}
         
-        if(count == 0) {res = 0}
+        if(count === 0) {res = 0}
         tot.tot += res;
 
         if(res < 0) {res = 0}
@@ -415,7 +415,7 @@ export default class Calc extends React.Component {
         
         
         if(volume - this.normalizeToGb(limit[i]) > 0){
-            if(i == limit.length -1){
+            if(i === limit.length -1){
                 
                 let price = volume * pergb_price[i]
                 cost += price
@@ -432,7 +432,7 @@ export default class Calc extends React.Component {
             
             break
         }
-        else if (volume - this.normalizeToGb(limit[i]) == 0){
+        else if (volume - this.normalizeToGb(limit[i]) === 0){
             console.log("last " + volume)
             let price = volume * pergb_price[i]
             cost += price
@@ -1598,7 +1598,7 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
-                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A {(this.state.natg_count - this.state.nwfw_endpoints) == 0 ? "- Matches ANF Usage" : ""}</td> }
+                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A {(this.state.natg_count - this.state.nwfw_endpoints) === 0 ? "- Matches ANF Usage" : ""}</td> }
                                     
                                     {console.log(this.state.natg_count - this.state.nwfw_endpoints)}
 
