@@ -428,7 +428,7 @@ export default class Main extends React.Component {
                 break;
         }
 
-        this.requiresServices()
+        
     }
     
     interRegionChange = (checked, e) => {
