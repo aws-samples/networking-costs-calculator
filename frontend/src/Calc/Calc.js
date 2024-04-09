@@ -1737,7 +1737,7 @@ export default class Calc extends React.Component {
                                         <th style={{width: '12px'}}></th>
                                     </tr>
                                 </thead>
-                                <tbody style={{height: '98px'}}>
+                                <tbody style={{height: '180px'}}>
                                     {this.state.transfers.map( (t,i) => {
                                         //if (!this.props.parentState.dx ) return "";
                                         //if (!this.props.parentState.vpn && (t.source==='VPN' || t.dest==='VPN')) return "";
