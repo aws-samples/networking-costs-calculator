@@ -201,7 +201,7 @@ export default class Calc extends React.Component {
         let totalNATG =  parseInt(this.getTotalDataTransferFromService("NAT Gateway"))
         let totalANF = parseInt(this.getTotalDataTransferFromService("Network Firewall"))
 
-            if(this.props.parentState.nwfw && this.props.parentState.natg && totalANF !== 0){
+            if((this.props.parentState.nwfw || this.props.parentState.nwfw_c) && this.props.parentState.natg && totalANF !== 0){
                 
 
                 let tempTransfer = []
@@ -294,7 +294,7 @@ export default class Calc extends React.Component {
         
         let anfMatchedHours = 0;
 
-        if(this.props.parentState.nwfw && this.props.parentState.natg){
+        if((this.props.parentState.nwfw || this.props.parentState.nwfw_c) && this.props.parentState.natg){
 
             
             if(this.state.nwfw_usage_type === 'hours'){
@@ -1598,8 +1598,10 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
-                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A {(this.state.natg_count - this.state.nwfw_endpoints) === 0 ? "- Matches ANF Usage" : ""}</td> }
-                                    
+                                    <td>
+                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? "Networking Account" : "Account A" }
+                                    { ((this.state.natg_count - this.state.nwfw_endpoints) === 0  && (this.props.parentState.nwfw_c || this.props.parentState.nwfw_c)) ? "- Matches ANF Usage" : ""}
+                                    </td> 
                                     {console.log(this.state.natg_count - this.state.nwfw_endpoints)}
 
                                     { <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>}
