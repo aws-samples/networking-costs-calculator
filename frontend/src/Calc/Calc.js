@@ -201,7 +201,7 @@ export default class Calc extends React.Component {
         let totalNATG =  parseInt(this.getTotalDataTransferFromService("NAT Gateway"))
         let totalANF = parseInt(this.getTotalDataTransferFromService("Network Firewall"))
 
-            if(this.props.parentState.nwfw && this.props.parentState.natg && totalANF !== 0){
+            if((this.props.parentState.nwfw || this.props.parentState.nwfw_c) && this.props.parentState.natg && totalANF !== 0){
                 
 
                 let tempTransfer = []
@@ -294,7 +294,7 @@ export default class Calc extends React.Component {
         
         let anfMatchedHours = 0;
 
-        if(this.props.parentState.nwfw && this.props.parentState.natg){
+        if((this.props.parentState.nwfw || this.props.parentState.nwfw_c) && this.props.parentState.natg){
 
             
             if(this.state.nwfw_usage_type === 'hours'){
@@ -462,7 +462,7 @@ export default class Calc extends React.Component {
         if(t.source === 'VPC Endpoint' && t.dest === 'Processed'){
             res.cost = this.getTransferCostsWithLimit(t, this.props.parentState.prices.pergb_vpce, [{volume: 1, unit: "PB"}, {volume: 4, unit: "PB"}, {volume: 5, unit: "PB"}]);
             res.comments = "For 1 Endpoint"
-            res.payingAccount = "Account A"
+            res.payingAccount = "Endpoint Owner"
         }
         if(t.source === 'TGW Attachment' && t.dest === 'Processed'){
             res.cost = this.getTransferCosts(t, this.props.parentState.prices.pergb_vpc);
@@ -473,17 +473,17 @@ export default class Calc extends React.Component {
             console.log(t.factorIn);
             res.cost = t.factorIn? this.getTransferCosts(t, this.props.parentState.prices.pergb_natg) : this.getTransferCosts(t,0);
             res.comments = t.factorIn? "N/A" : "Matched ANF Usage"
-            res.payingAccount = "Account A"
+            res.payingAccount = (this.props.parentState.nwfw)? "Account A": (this.props.parentState.nwfw_c && this.props.parentState.natg)? "Networking Account" :"Account A"
         }
         if(t.source === 'Network Firewall' && t.dest === 'Processed'){
             res.cost = this.getTransferCosts(t, this.props.parentState.prices.pergb_nwfw);
             res.comments = "N/A"
-            res.payingAccount = "Account A"
+            res.payingAccount =  (this.props.parentState.nwfw)? "Account A & B" : (this.props.parentState.nwfw_c && this.props.parentState.natg)? "Networking Account" :"Account A"
         }
         if(t.source === 'GWLB Endpoint' && t.dest === 'Processed'){
             res.cost = this.getTransferCosts(t, this.props.parentState.prices.pergb_glb);
             res.comments = "N/A"
-            res.payingAccount = "Account A"
+            res.payingAccount = "Endpoint Owner"
         }
     
         // The calculator no longer supports data transfer cost calculations, the code below can be commented out if you wish to add back this feature
@@ -1505,7 +1505,7 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NWFW</td>
-                                    <td>Account A & B {this.props.parentState.nwfw_c? '& C ': ''} - Endpoints</td>
+                                    <td>Account A & B {this.props.parentState.nwfw_c? '& Networking ': ''} - Endpoints</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_nwfw}/h</td>
                                     <td>{this.props.parentState.currency}{this.getNWFWMonthly(this.props.parentState.prices.att_nwfw * this.state.nwfw_endpoints * ((this.state.nwfw_usage_type === 'hours'? (this.state.nwfw_usage) : (this.state.nwfw_usage * 24 ))), att_tot)}</td>
                                 </tr>
@@ -1523,7 +1523,7 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>GWLB</td>
-                                    <td>Account A</td>
+                                    <td>Networking Account</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_glb}/h</td>
                                     <td>{this.props.parentState.currency}{(this.getAttMonthly(this.props.parentState.prices.att_glb, att_tot, this.state.glb_azs))}</td>
                                 </tr>
@@ -1532,7 +1532,7 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>GWLB</td>
-                                    <td>Account A - LCUs</td>
+                                    <td>Networking Account - LCUs</td>
                                     <td>${this.props.parentState.prices.glb_plcu}/h</td>
                                     <td>{this.props.parentState.currency}{this.getMonthlyLCUPricesforLB('glb',att_tot)}</td>
                                 </tr>
@@ -1541,7 +1541,7 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>GWLB</td>
-                                    <td>Account A - Endpoints</td>
+                                    <td>Endpoint Owner</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_endp_glb}/h</td>
                                     <td>{this.props.parentState.currency}{(this.getAttMonthly(this.props.parentState.prices.att_endp_glb, att_tot) * this.state.glb_endp)}</td>
                                 </tr>
@@ -1552,7 +1552,7 @@ export default class Calc extends React.Component {
                                     <td>VPCE</td>
 
                                     
-                                    <td>Account A & B</td>
+                                    <td>{ (this.props.parentState.vpce_c) ? "Networking Account" : "Account A & B" }</td>
                                     <td>{this.props.parentState.currency}{this.props.parentState.prices.att_vpce}/h</td>
                                     <td>{this.props.parentState.currency}{(this.getAttMonthly(this.props.parentState.prices.att_vpce, att_tot, this.state.vpce_az * this.state.vpce_endp))}</td>
                                 </tr>
@@ -1598,8 +1598,10 @@ export default class Calc extends React.Component {
                                 <tr>
                                     <td>{tgwatt_row_num++}</td>
                                     <td>NAT G</td>
-                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? <td>Networking Account</td> : <td>Account A {(this.state.natg_count - this.state.nwfw_endpoints) === 0 ? "- Matches ANF Usage" : ""}</td> }
-                                    
+                                    <td>
+                                    {(this.props.parentState.natg && this.props.parentState.nwfw_c) ? "Networking Account" : "Account A" }
+                                    { ((this.state.natg_count - this.state.nwfw_endpoints) === 0  && (this.props.parentState.nwfw_c || this.props.parentState.nwfw_c)) ? "- Matches ANF Usage" : ""}
+                                    </td> 
                                     {console.log(this.state.natg_count - this.state.nwfw_endpoints)}
 
                                     { <td>{this.props.parentState.currency}{this.props.parentState.prices.att_natg}/h</td>}

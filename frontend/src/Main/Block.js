@@ -97,7 +97,7 @@ export default class Block extends React.Component<BlockProps, {}> {
                 extraStyle.t7 = {top: -22};
             } else if (this.props.src==='ENDP'){
                 extraStyle.b2 = {top: 31};
-                extraStyle.b5 = {top: 22};
+                extraStyle.b5 = {top: 30};
                 extraStyle.b6 = {top: 31};
                 extraStyle.b8 = {top: 31};
             } else if (this.props.src==='PHZ'){
