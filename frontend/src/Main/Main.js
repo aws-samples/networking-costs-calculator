@@ -838,7 +838,7 @@ export default class Main extends React.Component {
 
                                                         {/* Account A Bottom Row*/}
                                                         <ArcherElement id="vpcaa"
-                                                            relations={((this.state.dx || this.state.vpn || this.state.interRegion || this.state.r53res_inbound || this.state.r53res_outbound || this.state.tgw ) ^ (this.state.nwfw_c || this.state.vpce_c))? [ 
+                                                            relations={((this.state.dx || this.state.vpn || this.state.interRegion || this.state.r53res_inbound || this.state.r53res_outbound || this.state.tgw ) ^ (this.state.nwfw_c || this.state.vpce_c) && !this.state.glb_c)? [ 
                                                                 {
                                                                 targetId:'t4-tgw',
                                                                 targetAnchor: 'top',
