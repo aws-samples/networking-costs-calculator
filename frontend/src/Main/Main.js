@@ -2259,7 +2259,7 @@ export default class Main extends React.Component {
                                         alert('Please choose a different region!')
                                     } else {
                                         this.setState({preloader_active: true});
-
+                                        
                                         let requested_ids = [];
                                         requested_ids.push ("DT_InterRegion--" + this.state.region + '---' + value.code);
                                         requested_ids.push ("DT_InterRegion--" + value.code + '---' + this.state.region);
@@ -2274,6 +2274,7 @@ export default class Main extends React.Component {
                                                     this.setState({
                                                         preloader_active: false,
                                                         interRegion: true,
+                                                        peeredRegion: value.code,
                                                         using_default_pricng:true,
                                                         tgw:true,
                                                         prices:{
