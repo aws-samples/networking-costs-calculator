@@ -9,7 +9,7 @@ s3 = boto3.resource("s3")
 
 def lambda_handler(event, context):
     getTgwPrices()
-    getDTPrices("InterRegion Outbound")
+    getDTPrices("InterRegion Outbound","AWSDataTransfer")
     getDTPrices("IntraRegion")
     getDxPrices()
     getDtoInternetPrices()
@@ -131,8 +131,8 @@ def getOnDemandPriceDx(price_obj):
             'pricePerUnit': {'N':pricePerUnit}
         })        
 
-def getDTPrices(filter):
-    serviceCode = 'AmazonEC2'
+def getDTPrices(filter, serviceCode = 'AmazonEC2'):
+    serviceCode = serviceCode
     nexttoken = "START"
     filters = [
                 {'Type' :'TERM_MATCH', 'Field':'transferType', 'Value':filter}
