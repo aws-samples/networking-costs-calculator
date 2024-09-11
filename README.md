@@ -13,8 +13,9 @@ This project is a self-hosted calculator to help you estimate AWS networking cos
 ## Architecture
 The calculator has two main components:
 * A serverless backend part, that uses the AWS Price List Query APIs to get the updated prices for the relevant networking services. These prices are cached in a DynamoDB table.
-* A ReactJS frontend web application, that is the user interface for estimating the costs for various networking services (runs on your local computer).
-![Architecture](frontend/public/img/arch.png?raw=true "Architecture")
+* A ReactJS frontend web application, that is the user interface for estimating the costs for various networking services (hosted with S3 and CloudFront).
+  
+![Architecture](frontend/public/img/fig2_arc.png?raw=true "Architecture")
 
 ## Pre-requisites
 * A linux-based OS (no Windows deployment script yet)
