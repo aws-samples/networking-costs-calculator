@@ -32,7 +32,7 @@ export class BackendStack extends cdk.Stack {
         'netcalc_bucket': netcalcBucket.bucketName
       },
       memorySize: 1024,
-      timeout: cdk.Duration.seconds(180)
+      timeout: cdk.Duration.seconds(600)
     });
     pricingTable.grantReadWriteData(pricingScraper);
     netcalcBucket.grantReadWrite(pricingScraper);
