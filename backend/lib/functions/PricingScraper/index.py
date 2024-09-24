@@ -212,7 +212,7 @@ def getOnDemandPrice(price_obj, code):
     #print(price_obj['product']['attributes']['groupDescription'] + ', ' + price_obj['product']['attributes']['location'] + ': ' + pricePerUnit + ' USD')
     groupDescription = ""
     if "groupDescription" in price_obj['product']['attributes']:
-        groupDescription = price_obj['product']['attributes']['groupDescription'];
+        groupDescription = price_obj['product']['attributes']['groupDescription']
     
     if not groupDescription and ("transferType" in price_obj['product']['attributes']) and price_obj['product']['attributes']['transferType'].startswith("InterRegion"):
         price_id = ("DT_InterRegion--" +
@@ -251,7 +251,7 @@ def getOnDemandPrice(price_obj, code):
         elif "hourly usage by Gateway Load Balancer".lower() in groupDescription.lower():
             attachment_code = code + "_glb"
         elif "AWS Gateway Load Balancer VPC Endpoint".lower() in groupDescription.lower():
-            attachment_code = code + "_glb"
+            attachment_code = code + "endp_glb"
         elif "Hourly charge for VPC Endpoints".lower() in groupDescription.lower():
             attachment_code = code +'_vpce'
         price_id = attachment_code + "--" + price_obj['product']['attributes']['location']
@@ -322,14 +322,15 @@ def getLBEndpointPrices(usageType):
         nexttoken =  response.get ('NextToken',"")
         for price in response['PriceList']:
             price_obj = json.loads(price)
-            if price_obj['product']['attributes']['groupDescription'].lower().startswith("hourly charge for"):
-                test = 1
-                #getOnDemandPrice(price_obj, "att")
+            if "charge for VPC Endpoints".lower() in price_obj['product']['attributes']['groupDescription'].lower(): 
+                getOnDemandPrice(price_obj, "att")
+            elif "Hourly charge for AWS Gateway Load Balancer VPC Endpoint". lower() in price_obj['product']['attributes']['groupDescription'].lower():
+                getOnDemandPrice(price_obj, "att_endp")
             elif "per GB data processed by VPC Endpoints".lower() in price_obj['product']['attributes']['groupDescription'].lower():
                 getOnDemandVPCEndpointPrices(price_obj, "pergb_vpce")
             elif " GB data processed by AWS Gateway".lower() in price_obj['product']['attributes']['groupDescription'].lower():
                 test = 2
-                #getOnDemandPrice(price_obj, "pergb")   
+                getOnDemandPrice(price_obj, "pergb")
                 
 def getLBPrices(usageType):
     serviceCode = 'AWSELB'
