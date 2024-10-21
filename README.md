@@ -18,21 +18,21 @@ The calculator has two main components:
 ![Architecture](frontend/public/img/fig2_arc.png?raw=true "Architecture")
 
 ## Pre-requisites
-* A linux-based OS (no Windows deployment script yet)
-* NodeJS (version 18 or later) and NPM.
+* A Windows or Linux based OS (use `.\deploy.ps1` for Windows and `./deploy.sh` for Linux)
+* NodeJS (version 18 or later) and NPM (version 7.2 or later)
 [Node](http://nodejs.org/) and [NPM](https://npmjs.org/) are really easy to install.
 To make sure you have them available on your machine,
 try running the following command.
 
 ```sh
 $ npm -v && node -v
-7.24.2
-v18.16.1
+10.5.0
+v18.18.2
 ```
 * The AWS CDK installed (you can install with `npm install -g aws-cdk`).
 ```sh
 $ cdk --version
-2.124.0 (build 4b6724c)
+2.162.1 (build 10aa526)
 ```
 * If you have never used the AWS CDK in the current account and Region, run bootstrapping with npx cdk bootstrap.
 ```sh
@@ -51,11 +51,18 @@ $ aws sts get-caller-identity
 }
 ```
 
-## How to deploy
+## How to deploy - Linux OS (Bash)
 Run the deployment script from the project's root directory:
 
 ```sh
 $ ./deploy.sh
+```
+
+## How to deploy - Windows OS (PowerShell)
+Run the deployment PowerShell script from the project's root directory:
+
+```powershell
+$ .\deploy.ps1
 ```
 
 ## How to destroy
