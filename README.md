@@ -51,17 +51,17 @@ $ aws sts get-caller-identity
 }
 ```
 
-## How to deploy - Linux OS
+## How to deploy - Linux OS (Bash)
 Run the deployment script from the project's root directory:
 
 ```sh
 $ ./deploy.sh
 ```
 
-## How to deploy - Windows OS
+## How to deploy - Windows OS (Powershell)
 Run the deployment Powershell script from the project's root directory:
 
-```sh
+```powershell
 $ .\deploy.ps1
 ```
 
