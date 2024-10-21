@@ -58,8 +58,8 @@ Run the deployment script from the project's root directory:
 $ ./deploy.sh
 ```
 
-## How to deploy - Windows OS (Powershell)
-Run the deployment Powershell script from the project's root directory:
+## How to deploy - Windows OS (PowerShell)
+Run the deployment PowerShell script from the project's root directory:
 
 ```powershell
 $ .\deploy.ps1
