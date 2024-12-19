@@ -783,7 +783,7 @@ export default class Main extends React.Component {
                                                         icon='small' 
                                                         style={{width: '260px'}}
                                                         title={<div>
-                                                                <span>Private Link Supportod Services</span>
+                                                                <span>Private Link Supported Services</span>
                                                                 <span>3rd Party VPC</span>
                                                                 <span>Service Provider VPC</span>
                                                             </div>}
