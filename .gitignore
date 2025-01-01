@@ -26,3 +26,4 @@ cdk.out
 work/
 aggregated_results.txt
 .vscode
+.idea
